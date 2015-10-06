@@ -128,12 +128,13 @@ dm_read_yaml <- function(file = NULL, text = NULL) {
 
   if(missing(text)) {
     if(!missing(file)) {
-      text <- paste(readLines(file), collapse = "\n")
+      dm <- yaml::yaml.load_file(file)
     } else {
       stop("A file or text needed.")
     }
+  } else {
+    dm <- yaml::yaml.load(text)
   }
-  dm <- yaml::yaml.load(text)
 
 
   lapply(dm, function(x) {
@@ -199,7 +200,8 @@ dm_graph <- function(x, rankdir = "BT", graph_name = "Data Model",
       if(is.null(tab$key))
         tab$key <- NA
       tab_mark <- ifelse(is.na(tab$ref), "", "~")
-      tab_label <- ifelse(is.na(tab$key), tab$column, sprintf("<U>%s</U>", tab$column))
+      tab_label <- ifelse(is.na(tab$key) | tab$key == 0,
+                          tab$column, sprintf("<U>%s</U>", tab$column))
       paste(
         '  <<TABLE ALIGN="LEFT" BORDER="1" CELLBORDER="0" CELLSPACING="0">\n',
         sprintf('    <TR><TD COLSPAN="2" BGCOLOR="#CCCCCC" BORDER="0">%s</TD></TR>\n', tab_name),
