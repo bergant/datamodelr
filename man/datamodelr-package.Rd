@@ -17,7 +17,7 @@ and a function to create DiagrammeR graph objects:
     See \code{\link{as.data_model}}.
   \item Function \code{\link{dm_read_yaml}} reads YAML format and creates a
     data model object.
-  \item Function \code{\link{dm_graph}} creates DiagrammeR graph object from
+  \item Function \code{\link{dm_create_graph}} creates DiagrammeR graph object from
     data model object.
 }
 }

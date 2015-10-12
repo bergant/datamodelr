@@ -1,0 +1,44 @@
+# data model segments
+- segment: &md Master data
+- segment: &tran Transactions
+
+# Tables and columns
+- table: Person
+  segment: *md
+  columns:
+    Person ID: {key: yes}
+    Name:
+    E-mail:
+    Street:
+    Street number:
+    City:
+    ZIP:
+
+- table: Order
+  segment: *tran
+  columns:
+    Order ID: {key: yes}
+    Customer: {ref: Person}
+    Sales person: {ref: Person}
+    Order date:
+    Requested ship date:
+    Status:
+
+- table: Order Line
+  segment: *tran
+  columns:
+    Order ID: {key: yes, ref: Order}
+    Line number: {key: yes}
+    Order item: {ref: Item}
+    Quantity:
+    Price:
+
+- table: Item
+  segment: *md
+  columns:
+    Item ID: {key: yes}
+    Item Name:
+    Description:
+    Category:
+    Size:
+    Color:

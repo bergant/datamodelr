@@ -21,11 +21,12 @@ If possible it returns a data model object.
 Functions to coerce an object to a data model if possible.
 }
 \details{
-Function accepts a named list of data frames or a single data frame
-  with column 'table'.
-
-  Data frame(s) must have an element named 'column'.
-  Element 'key' (boolean) defines a column as a primary key.
-  Element 'ref' (character string) defines referenced table name.
+Function accepts a data frame with columns info.
+  Data frame must have 'table' and 'column' elements.
+  Optional element 'key' (boolean) marks a column as a primary key.
+  Optional element 'ref' (character string) defines referenced table name.
+  Optional element 'ref_col' (character string) defines a column in a
+    referenced table name primary key (only necessery when referenced
+    table has a compound primary key).
 }
 

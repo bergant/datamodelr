@@ -1,8 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^README\.Rmd$
-^README\.html$
-^IMG$
+^readme\.Rmd$
+^readme\.html$
 ^readme.md$
+^IMG$
+^todo.md$
 ^\.travis\.yml$
 ^pages$
