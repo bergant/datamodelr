@@ -102,20 +102,13 @@ dm_render_graph(graph)
 
 ### Reverse-engineer an Existing Database
 
-This example is using [RODBC](http://CRAN.R-project.org/package=RODBC) 
-package to get the information about 
-the good old [Northwind database](https://northwinddatabase.codeplex.com/) 
-from SQL Server Express.
+This example uses [Northwind](https://northwinddatabase.codeplex.com/) sample
+database and [RODBC](http://CRAN.R-project.org/package=RODBC) 
+package as an interface to SQL Server.
 
 ```{r}
 library(RODBC)
-
-# Find the right connection string for your database:
-con <- 
-  odbcDriverConnect(
-    "Driver={SQL Server}; Server=NB-DARKOB\\SQLEXPRESS; Database=Northwind")
-
-# Select tables, columns, primary and foreign keys:
+con <- odbcConnect(dsn = "NW")
 sQuery <- dm_re_query("sqlserver")
 dm_northwind <- sqlQuery(con, sQuery, stringsAsFactors = FALSE, errors=TRUE)
 odbcClose(con)
@@ -134,10 +127,26 @@ dm_render_graph(nw_graph)
 
 ![](img/northwind.png)
 
+You can arrange tables in clusters with `dm_set_segment` function: 
+
+```{r}
+table_segments <- list(
+  Orders = c("Orders", "Order Details"),
+  Customer = c("Customers", "CustomerCustomerDemo", "CustomerDemographics"),
+  Employees = c("Employees", "EmployeeTerritories", "Territories", "Region") )
+
+dm_northwind <- dm_set_segment(dm_northwind, table_segments)
+
+```
+
+
 ### PostgreSQL Example
 
+This example uses [DVD Rental](http://www.postgresqltutorial.com/postgresql-sample-database/) 
+sample database and [RPostgreSQL](https://cran.r-project.org/package=RPostgreSQL) 
+package as an interface to PostgreSQL database. 
 
-```{r fig.height=9, eval=FALSE}
+```{r fig.height=9, eval=TRUE}
 
 library(RPostgreSQL)
 con <- dbConnect(dbDriver("PostgreSQL"), dbname="dvdrental", user ="postgres")
@@ -146,9 +155,29 @@ dm_dvdrental <- dbGetQuery(con, sQuery)
 dbDisconnect(con)
 
 dm_dvdrental <- as.data_model(dm_dvdrental)
+
+```
+
+Show model:
+```{r eval=FALSE}
 dvd_graph <- dm_create_graph(dm_dvdrental, rankdir = "RL")
 dm_render_graph(dvd_graph)
 ```
 
-![](img/dvdrentals.png)
+![](img/dvdrental.png)
 
+To focus on a part of the model use `focus` attribute in `dm_create_graph` function:
+```{r eval=FALSE}
+focus <- list(tables = c(
+    "customer",
+    "payment", 
+    "rental",
+    "inventory",
+    "film"
+))
+    
+dvd_graph_small <- dm_create_graph( dm_dvdrental, rankdir = "RL", focus = focus)
+dm_render_graph(dvd_graph_small)
+```
+
+![](img/dvdrental_small.png)

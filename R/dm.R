@@ -356,3 +356,23 @@ dm_re_query <- function(rdbms) {
   sQuery
 }
 
+
+#' Set table segment
+#'
+#' Change tables' segment name in a data model
+#'
+#' @param dm A data model object
+#' @param table_segments A named list of vectors with segments as element names
+#'   and tables as values in vectors
+#' @export
+dm_set_segment <- function(dm, table_segments) {
+
+  if(!is.data_model(dm))
+    stop("Not a data model object.")
+  for(s in names(table_segments)) {
+    table_names <- table_segments[[s]]
+    dm$tables$segment[dm$tables$name %in% table_names ] <- s
+    dm$columns$segment[dm$columns$table %in% table_names] <- s
+  }
+  dm
+}
