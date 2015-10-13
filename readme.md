@@ -1,7 +1,7 @@
 
 
 
-<img width="40%" align="right" src="img/sample.png" />
+<img width="50%" align="right" src="img/sample.png" />
 
 # datamodelr
 Data model diagrams with [DiagrammeR](https://cran.r-project.org/package=DiagrammeR)
@@ -166,7 +166,8 @@ dm_render_graph(graph)
 ![](img/dvdrental_small.png)
 
 ### Reduce Detail
-To emphasize the table relations use `view_type = "keys_only"`:
+To emphasize the table relations and hide the "non-key"" 
+columns use `view_type = "keys_only"`:
 
 
 ```r
