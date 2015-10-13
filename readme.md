@@ -4,7 +4,7 @@
 <img width="40%" align="right" src="img/sample.png" />
 
 # datamodelr
-Data model diagrams with DiagrammeR
+Data model diagrams with [DiagrammeR](https://cran.r-project.org/package=DiagrammeR)
 
 ## Installation
 
@@ -79,13 +79,11 @@ file_path <- system.file("samples/example.yml", package = "datamodelr")
 dm <- dm_read_yaml(file_path)
 ```
 
-Create a [DiagrammeR](https://cran.r-project.org/package=DiagrammeR) graph object
-to plot the model:
+Create a graph object to plot the model:
 
 
 ```r
 graph <- dm_create_graph(dm, rankdir = "RL")
-
 dm_render_graph(graph)
 ```
 
@@ -113,24 +111,11 @@ Plot the result:
 
 
 ```r
-nw_graph <- dm_create_graph(dm_northwind, rankdir = "BT")
-
-dm_render_graph(nw_graph)
+graph <- dm_create_graph(dm_northwind, rankdir = "BT")
+dm_render_graph(graph)
 ```
 
 ![](img/northwind.png)
-
-You can arrange tables in clusters with `dm_set_segment` function: 
-
-
-```r
-table_segments <- list(
-  Orders = c("Orders", "Order Details"),
-  Customer = c("Customers", "CustomerCustomerDemo", "CustomerDemographics"),
-  Employees = c("Employees", "EmployeeTerritories", "Territories", "Region") )
-
-dm_northwind <- dm_set_segment(dm_northwind, table_segments)
-```
 
 
 ### PostgreSQL Example
@@ -141,7 +126,6 @@ package as an interface to PostgreSQL database.
 
 
 ```r
-
 library(RPostgreSQL)
 #> Loading required package: DBI
 con <- dbConnect(dbDriver("PostgreSQL"), dbname="dvdrental", user ="postgres")
@@ -156,13 +140,15 @@ dm_dvdrental <- as.data_model(dm_dvdrental)
 Show model:
 
 ```r
-dvd_graph <- dm_create_graph(dm_dvdrental, rankdir = "RL")
-dm_render_graph(dvd_graph)
+graph <- dm_create_graph(dm_dvdrental, rankdir = "RL")
+dm_render_graph(graph)
 ```
 
 ![](img/dvdrental.png)
 
-To focus on a part of the model use `focus` attribute in `dm_create_graph` function:
+### Focused Data Model Diagram
+
+To focus in on a few tables from your model use `focus` attribute in `dm_create_graph` function:
 
 ```r
 focus <- list(tables = c(
@@ -173,8 +159,55 @@ focus <- list(tables = c(
     "film"
 ))
     
-dvd_graph_small <- dm_create_graph( dm_dvdrental, rankdir = "RL", focus = focus)
-dm_render_graph(dvd_graph_small)
+graph <- dm_create_graph( dm_dvdrental, rankdir = "RL", focus = focus)
+dm_render_graph(graph)
 ```
 
 ![](img/dvdrental_small.png)
+
+### Reduce Detail
+To emphasize the table relations use `view_type = "keys_only"`:
+
+
+```r
+graph <- dm_create_graph(dm_dvdrental, view_type = "keys_only", rankdir = "RL")
+dm_render_graph(graph)
+```
+
+![](img/dvdrental_keys.png)
+
+### Diagram Segments
+To arrange tables in clusters with `dm_set_segment` function: 
+
+
+```r
+table_segments <- list(
+  Transactions = c("rental", "inventory", "payment"),
+  Party = c("customer", "staff", "address", "city", "country", "store"),
+  Film = c("film", "film_actor", "actor", "language", "film_category", "category") )
+
+dm_dvdrental_seg <- dm_set_segment(dm_dvdrental, table_segments)
+```
+
+A clustered diagram:
+
+```r
+graph <- dm_create_graph(dm_dvdrental_seg, rankdir = "RL", view_type = "keys_only")
+dm_render_graph(graph)
+
+```
+
+![](img/dvdrental_seg.png)
+
+### Graph Direction
+Use `rankdir` to change the direction of graph:
+
+
+```r
+graph <- dm_create_graph(dm_dvdrental_seg, rankdir = "BT", view_type = "keys_only")
+dm_render_graph(graph)
+```
+
+![](img/dvdrental_bottom_top.png)
+
+
