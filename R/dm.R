@@ -90,6 +90,7 @@ as.data_model.data.frame <- function(x) {
 
   if(is.null(x[["ref"]])) x[["ref"]] <- NA
   if(is.null(x[["segment"]])) x[["segment"]] <- NA
+  if(is.null(x[["display"]])) x[["display"]] <- NA
 
 
   # create references from ref and keys
@@ -178,7 +179,9 @@ dm_read_yaml <- function(file = NULL, text = NULL) {
   } else {
     dm <- yaml::yaml.load(text)
   }
-
+  if(is.null(dm)) {
+    return(NULL)
+  }
 
   col_table <- dm_list2coltable(dm)
   return(as.data_model(col_table))

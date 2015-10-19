@@ -196,13 +196,12 @@ dm_create_graph <- function(dm, rankdir = "BT", graph_name = "Data Model",
   g_list <-
     dm_create_graph_list(dm, view_type, title_bgcolor, focus)
 
-
   graph <-
     DiagrammeR::create_graph(
       graph_attrs = sprintf('rankdir=%s tooltip="%s" %s', rankdir, graph_name, graph_attrs),
       node_attrs = 'margin=0 color="gray" fontcolor = "#444444"',
       nodes_df = do.call(DiagrammeR::create_nodes, g_list$nodes),
-      edges_df = do.call(DiagrammeR::create_edges, g_list$edges),
+      edges_df = if(!is.null(g_list$edges)) do.call(DiagrammeR::create_edges, g_list$edges) else NULL,
       edge_attrs = c('color = "#555555"',"arrowsize = 1")
     )
 
@@ -282,3 +281,4 @@ dot_graph <- function(graph) {
                  dot_edges)
   ret
 }
+

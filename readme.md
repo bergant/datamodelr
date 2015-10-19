@@ -75,7 +75,6 @@ Create a data model object with `dm_read_yaml`:
 ```r
 library(datamodelr)
 file_path <- system.file("samples/example.yml", package = "datamodelr")
-
 dm <- dm_read_yaml(file_path)
 ```
 
@@ -165,8 +164,8 @@ dm_render_graph(graph)
 
 ![](img/dvdrental_small.png)
 
-### Reduce Detail
-To emphasize the table relations and hide the "non-key"" 
+### Hide columns
+To emphasize table relations and hide the "non-key"" 
 columns use `view_type = "keys_only"`:
 
 
@@ -178,7 +177,7 @@ dm_render_graph(graph)
 ![](img/dvdrental_keys.png)
 
 ### Diagram Segments
-To arrange tables in clusters with `dm_set_segment` function: 
+Arrange tables in clusters with `dm_set_segment` function: 
 
 
 ```r
@@ -190,7 +189,7 @@ table_segments <- list(
 dm_dvdrental_seg <- dm_set_segment(dm_dvdrental, table_segments)
 ```
 
-A clustered diagram:
+Render the clustered diagram with only key columns:
 
 ```r
 graph <- dm_create_graph(dm_dvdrental_seg, rankdir = "RL", view_type = "keys_only")
@@ -210,5 +209,25 @@ dm_render_graph(graph)
 ```
 
 ![](img/dvdrental_bottom_top.png)
+
+### Shiny Application
+In the `shiny` subfolder of the datamodelr package you can find a shiny demo application.
+It renders data model from YAML model definition and exports resulting SVG file.
+Try it by typing
+
+
+```r
+shiny::runApp(system.file("shiny", package = "datamodelr"))
+```
+
+![](img/shiny.png)
+
+## Utilised Packages 
+datamodelr depends on:
+
+* [DiagrammeR](http://rich-iannone.github.io/DiagrammeR/) for graph rendering
+* [yaml](https://github.com/viking/r-yaml) for parsing YAML files in R
+* RStudio [shiny](https://github.com/rstudio/shiny) and
+   [shinyAce](https://github.com/trestletech/shinyAce) for shiny application demo.
 
 
