@@ -112,9 +112,12 @@ dm_create_graph_list <- function(dm, view_type = "all",
                                  focus = NULL) {
 
   if(!is.data_model(dm)) stop("Input must be a data model object.")
+
+  # hidden tables
+
   if(!is.null(focus) && is.list(focus)) {
     if(!is.null(focus[["tables"]])) {
-      dm$tables <- dm$tables[dm$tables$name %in% focus$tables,  ]
+      dm$tables <- dm$tables[dm$tables$table %in% focus$tables,  ]
       dm$columns <- dm$columns[dm$columns$table %in% focus$tables,  ]
       if(is.null(focus[["external_ref"]]) || !focus[["external_ref"]]) {
         dm$references <- dm$references[
@@ -122,9 +125,26 @@ dm_create_graph_list <- function(dm, view_type = "all",
             dm$references$ref %in% focus$tables, ]
       }
     }
+  } else {
+    # hide tables with display == "hide" attribute
+    if(is.null(dm$tables$display)) dm$tables$display <- NA
+    dm$tables$display[is.na(dm$tables$display)] <- "show"
+    hidden_tables <- dm$tables[dm$tables$display == "hide", "table"]
+
+    dm$tables <- dm$tables[!dm$tables$table %in% hidden_tables,  ]
+    dm$columns <- dm$columns[!dm$columns$table %in% hidden_tables,  ]
+    dm$references <- dm$references[
+      !dm$references$table %in% hidden_tables &
+        !dm$references$ref %in% hidden_tables, ]
   }
 
+
+  # remove hidden columns
+  # dm$columns <-
+  #  dm$columns[is.na(dm$columns$display) | dm$columns$display != "hide", ]
+
   tables <- split(dm$columns, dm$columns$table)
+
   switch( view_type,
           all = {},
 
@@ -152,7 +172,7 @@ dm_create_graph_list <- function(dm, view_type = "all",
       label = g_labels,
       shape = "plaintext",
       type = "upper",
-      segment = sapply(tables, function(x) x$segment[1])
+      segment = dm$tables[order(dm$tables$table), "segment"]
     )
 
 

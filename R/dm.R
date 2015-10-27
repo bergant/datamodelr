@@ -89,25 +89,25 @@ as.data_model.data.frame <- function(x) {
   }
 
   if(is.null(x[["ref"]])) x[["ref"]] <- NA
-  if(is.null(x[["segment"]])) x[["segment"]] <- NA
-  if(is.null(x[["display"]])) x[["display"]] <- NA
 
 
   # create references from ref and keys
   ref_table <- dm_create_references(x)
 
-  table_segments <- attr(x, "segments")
-  if(is.null(attr(x, "segments"))) {
-    table_segments <- NA
+  table_attrs <- attr(x, "tables")
+  if(is.null(table_attrs)) {
+    table_attrs <-
+      data.frame(
+        name = unique(x[["table"]]),
+        segment = NA,
+        display = NA,
+        row.names = NULL,
+        stringsAsFactors = FALSE
+      )
   }
+  attr(x, "tables") <- NULL
   ret <- list(
-    tables = data.frame(
-      name = unique(x[["table"]]),
-      segment = table_segments,
-
-      row.names = NULL,
-      stringsAsFactors = FALSE
-    ),
+    tables = table_attrs,
     columns = x,
     references = ref_table
   )
@@ -202,7 +202,6 @@ dm_list2coltable <- function(x) {
   if(!is.list(x)) {
     stop("Input must be a list.")
   }
-  table_segments <- NULL
 
   if(is.null(names(x))) {
     # parsed yaml with sequences
@@ -217,15 +216,6 @@ dm_list2coltable <- function(x) {
     })
     names(columns) <- table_names
 
-    table_segments <- lapply(x_tables, function(tab) {
-      tab_name <- tab[["table"]]
-      if(!is.null(tab_name)) {
-        tab[["segment"]]
-      }
-    })
-    names(table_segments) <- table_names
-    table_segments[sapply(table_segments, is.null)] <- NA
-
     column_names <- lapply(columns, names)
     column_attributes <- unique( unlist( lapply(columns, sapply, names)))
 
@@ -235,7 +225,6 @@ dm_list2coltable <- function(x) {
     table_names <- names(columns)
     column_names <- lapply(columns, names)
     column_attributes <- unique( unlist( lapply(columns, sapply, names)))
-    table_segments <- setNames(rep(NA, length(table_names)), table_names)
   }
 
 
@@ -264,13 +253,45 @@ dm_list2coltable <- function(x) {
           )
         tab[[a]] <- attr_value
       }
-      tab$segment <- table_segments[[tab_name]]
       tab
     })
 
   ret <- do.call(rbind, table_list)
+
+  table_attrs <- dm_get_table_attrs(x)
+  attr(ret, "tables") <- table_attrs
+
   ret
 }
+
+dm_get_table_attrs <- function(x) {
+
+  x_tables <- x[sapply(x, function(x) !is.null(x[["table"]]))]
+  table_names <- sapply(x_tables, function(tab) tab[["table"]])
+  table_attrs <- unique(unlist(lapply(x_tables, names)))
+  table_attrs <- table_attrs[!table_attrs %in% c("columns", "table")]
+  names(x_tables) <- table_names
+
+  table_attrs <-
+    lapply(table_names, function(tab) {
+      ret <-
+        data.frame(
+          table = tab,
+          stringsAsFactors = FALSE
+        )
+      for(aname in table_attrs) {
+        tab_attr <- x_tables[[tab]][[aname]]
+        if(is.null(tab_attr)) {
+          tab_attr <- NA
+        }
+        ret[[aname]] <- tab_attr
+      }
+      ret
+    })
+
+  do.call(rbind, table_attrs)
+}
+
 
 #' Create reference info
 #'
@@ -375,7 +396,6 @@ dm_set_segment <- function(dm, table_segments) {
   for(s in names(table_segments)) {
     table_names <- table_segments[[s]]
     dm$tables$segment[dm$tables$name %in% table_names ] <- s
-    dm$columns$segment[dm$columns$table %in% table_names] <- s
   }
   dm
 }
