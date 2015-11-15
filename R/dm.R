@@ -259,6 +259,8 @@ dm_list2coltable <- function(x) {
   ret <- do.call(rbind, table_list)
 
   table_attrs <- dm_get_table_attrs(x)
+  if(!is.null(table_attrs) && is.null(table_attrs$segment))
+    table_attrs$segment <- NA
   attr(ret, "tables") <- table_attrs
 
   ret
