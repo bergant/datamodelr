@@ -98,7 +98,7 @@ as.data_model.data.frame <- function(x) {
   if(is.null(table_attrs)) {
     table_attrs <-
       data.frame(
-        name = unique(x[["table"]]),
+        table = unique(x[["table"]]),
         segment = NA,
         display = NA,
         row.names = NULL,

@@ -130,12 +130,13 @@ dm_create_graph_list <- function(dm, view_type = "all",
     if(is.null(dm$tables$display)) dm$tables$display <- NA
     dm$tables$display[is.na(dm$tables$display)] <- "show"
     hidden_tables <- dm$tables[dm$tables$display == "hide", "table"]
-
-    dm$tables <- dm$tables[!dm$tables$table %in% hidden_tables,  ]
-    dm$columns <- dm$columns[!dm$columns$table %in% hidden_tables,  ]
-    dm$references <- dm$references[
-      !dm$references$table %in% hidden_tables &
-        !dm$references$ref %in% hidden_tables, ]
+    if(!is.null(hidden_tables)) {
+      dm$tables <- dm$tables[!dm$tables$table %in% hidden_tables,  ]
+      dm$columns <- dm$columns[!dm$columns$table %in% hidden_tables,  ]
+      dm$references <- dm$references[
+        !dm$references$table %in% hidden_tables &
+          !dm$references$ref %in% hidden_tables, ]
+    }
   }
 
 
