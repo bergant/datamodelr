@@ -2,6 +2,7 @@
 output: 
   html_document: 
     keep_md: yes
+    toc: yes
 ---
 
 ```{r, echo = FALSE}
@@ -12,10 +13,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-<img width="50%" align="right" src="img/sample.png" />
-
 # datamodelr
-Data model diagrams with [DiagrammeR](https://cran.r-project.org/package=DiagrammeR)
+
+Data model diagrams with [DiagrammeR](http://rich-iannone.github.io/DiagrammeR/)
 
 ## Installation
 
@@ -27,6 +27,8 @@ devtools::install_github("bergant/datamodelr")
 ## Usage
 
 ### Model Definition in YAML
+
+<img width="35%" align="right" src="img/sample.png" />
 
 Define a data model in YAML:
 
@@ -70,6 +72,7 @@ Define a data model in YAML:
 
 - table: Item
   segment: *md
+  display: accent1
   columns:
     Item ID: {key: yes}
     Item Name:
@@ -89,12 +92,12 @@ dm <- dm_read_yaml(file_path)
 
 Create a graph object to plot the model:
 
-```{r eval=FALSE}
-graph <- dm_create_graph(dm, rankdir = "RL")
+```{r eval=FALSE, fig.height=8}
+graph <- dm_create_graph(dm, rankdir = "BT")
 dm_render_graph(graph)
 ```
 
-![](img/sample.png)
+
 
 ### Reverse-engineer an Existing Database
 
@@ -129,7 +132,7 @@ This example uses [DVD Rental](http://www.postgresqltutorial.com/postgresql-samp
 sample database and [RPostgreSQL](https://cran.r-project.org/package=RPostgreSQL) 
 package as an interface to PostgreSQL database. 
 
-```{r fig.height=9, eval=TRUE}
+```{r fig.height=9}
 library(RPostgreSQL)
 con <- dbConnect(dbDriver("PostgreSQL"), dbname="dvdrental", user ="postgres")
 sQuery <- dm_re_query("postgres")
@@ -208,10 +211,148 @@ dm_render_graph(graph)
 
 ![](img/dvdrental_bottom_top.png)
 
+### Colors
+To emphasise tables with colors use `dm_set_display` function:
+
+```{r eval=FALSE}
+display <- list(
+  accent1 = c("rental", "payment"),
+  accent2 = c("customer"),
+  accent3 = c("staff", "store"),
+  accent4 = c("film", "actor") )
+
+dm_dvdrental_col <- dm_set_display(dm_dvdrental_seg, display)
+graph <- dm_create_graph(dm_dvdrental_col, rankdir = "BT", view_type = "keys_only")
+dm_render_graph(graph)
+```
+
+![](img/dvdrental_colors.png)
+
+
+Default color scheme includes: 
+```{r echo=FALSE, fig.height=2, eval=FALSE}
+
+dm1 <- dm_read_yaml(text = "
+- table: accent1
+  display: accent1
+  columns:
+    column 01: 
+    column 02:
+- table: accent2
+  display: accent2
+  columns:
+    column 01: 
+    column 02:
+- table: accent3
+  display: accent3
+  columns:
+    column 01: 
+    column 02:
+- table: accent4
+  display: accent4
+  columns:
+    column 01: 
+    column 02:
+- table: accent5
+  display: accent5
+  columns:
+    column 01: 
+    column 02:
+- table: accent6
+  display: accent6
+  columns:
+    column 01: 
+    column 02:
+- table: accent7
+  display: accent7
+  columns:
+    column 01: 
+    column 02:
+")
+g1 <- dm_create_graph(dm1)
+dm_render_graph(g1)
+
+dm1 <- dm_read_yaml(text = "
+- table: accent1nb
+  display: accent1nb
+  columns:
+    column 01: 
+    column 02:
+- table: accent2nb
+  display: accent2nb
+  columns:
+    column 01: 
+    column 02:
+- table: accent3nb
+  display: accent3nb
+  columns:
+    column 01: 
+    column 02:
+- table: accent4nb
+  display: accent4nb
+  columns:
+    column 01: 
+    column 02:
+- table: accent5nb
+  display: accent5nb
+  columns:
+    column 01: 
+    column 02:
+- table: accent6nb
+  display: accent6nb
+  columns:
+    column 01: 
+    column 02:
+- table: accent7nb
+  display: accent7nb
+  columns:
+    column 01: 
+    column 02:
+")
+g1 <- dm_create_graph(dm1)
+dm_render_graph(g1)
+
+
+```
+
+![](img/colors.png)
+
+### Custom Colors
+Add your colors with `dm_add_colors` function:
+```{r eval=FALSE}
+
+my_colors <-
+  dm_color_scheme(
+    purple = dm_palette(
+      line_color = "#8064A2",
+      header_bgcolor = "#B1A0C7",
+      header_font = "#FFFFFF",
+      bgcolor = "#E4DFEC"
+    ),
+    red = dm_palette(
+      line_color = "#C0504D",
+      header_bgcolor = "#DA9694",
+      header_font = "#FFFFFF",
+      bgcolor = "#F2DCDB"
+    )
+)
+
+dm_add_colors(my_colors)
+
+dm <- dm_set_display(dm, display = list(
+  red = c("Order", "Order Line"),
+  purple = "Item"
+))
+
+graph <- dm_create_graph(dm, rankdir = "RL")
+dm_render_graph(graph)
+
+```
+
+![](img/sample_colors.png)
+
 ### Shiny Application
-In the `shiny` subfolder of the datamodelr package you can find a shiny demo application.
-It renders data model from YAML model definition and exports resulting SVG file.
-Try it by typing
+Try **datamodelr** Shiny application:
 
 ```{r eval=FALSE}
 shiny::runApp(system.file("shiny", package = "datamodelr"))

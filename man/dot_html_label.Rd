@@ -4,14 +4,14 @@
 \alias{dot_html_label}
 \title{Create a label}
 \usage{
-dot_html_label(x, title, title_bgcolor = "#EFEBDD")
+dot_html_label(x, title, palette_id = "default")
 }
 \arguments{
 \item{x}{A data frame with column info}
 
 \item{title}{A node title}
 
-\item{title_bgcolor}{Title background color}
+\item{palette_id}{Which color palette should be used (default)}
 }
 \description{
 Create a label for dot HTML shape

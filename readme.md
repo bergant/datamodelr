@@ -1,10 +1,9 @@
 
 
 
-<img width="50%" align="right" src="img/sample.png" />
-
 # datamodelr
-Data model diagrams with [DiagrammeR](https://cran.r-project.org/package=DiagrammeR)
+
+Data model diagrams with [DiagrammeR](http://rich-iannone.github.io/DiagrammeR/)
 
 ## Installation
 
@@ -17,6 +16,8 @@ devtools::install_github("bergant/datamodelr")
 ## Usage
 
 ### Model Definition in YAML
+
+<img width="35%" align="right" src="img/sample.png" />
 
 Define a data model in YAML:
 
@@ -60,6 +61,7 @@ Define a data model in YAML:
 
 - table: Item
   segment: *md
+  display: accent1
   columns:
     Item ID: {key: yes}
     Item Name:
@@ -82,11 +84,11 @@ Create a graph object to plot the model:
 
 
 ```r
-graph <- dm_create_graph(dm, rankdir = "RL")
+graph <- dm_create_graph(dm, rankdir = "BT")
 dm_render_graph(graph)
 ```
 
-![](img/sample.png)
+
 
 ### Reverse-engineer an Existing Database
 
@@ -210,10 +212,67 @@ dm_render_graph(graph)
 
 ![](img/dvdrental_bottom_top.png)
 
+### Colors
+To emphasise tables with colors use `dm_set_display` function:
+
+
+```r
+display <- list(
+  accent1 = c("rental", "payment"),
+  accent2 = c("customer"),
+  accent3 = c("staff", "store"),
+  accent4 = c("film", "actor") )
+
+dm_dvdrental_col <- dm_set_display(dm_dvdrental_seg, display)
+graph <- dm_create_graph(dm_dvdrental_col, rankdir = "BT", view_type = "keys_only")
+dm_render_graph(graph)
+```
+
+![](img/dvdrental_colors.png)
+
+
+Default color scheme includes: 
+
+
+![](img/colors.png)
+
+### Custom Colors
+Add your colors with `dm_add_colors` function:
+
+```r
+
+my_colors <-
+  dm_color_scheme(
+    purple = dm_palette(
+      line_color = "#8064A2",
+      header_bgcolor = "#B1A0C7",
+      header_font = "#FFFFFF",
+      bgcolor = "#E4DFEC"
+    ),
+    red = dm_palette(
+      line_color = "#C0504D",
+      header_bgcolor = "#DA9694",
+      header_font = "#FFFFFF",
+      bgcolor = "#F2DCDB"
+    )
+)
+
+dm_add_colors(my_colors)
+
+dm <- dm_set_display(dm, display = list(
+  red = c("Order", "Order Line"),
+  purple = "Item"
+))
+
+graph <- dm_create_graph(dm, rankdir = "RL")
+dm_render_graph(graph)
+
+```
+
+![](img/sample_colors.png)
+
 ### Shiny Application
-In the `shiny` subfolder of the datamodelr package you can find a shiny demo application.
-It renders data model from YAML model definition and exports resulting SVG file.
-Try it by typing
+Try **datamodelr** Shiny application:
 
 
 ```r

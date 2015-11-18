@@ -5,8 +5,7 @@
 \title{Create a graph object from data model object}
 \usage{
 dm_create_graph(dm, rankdir = "BT", graph_name = "Data Model",
-  graph_attrs = "", title_bgcolor = "#EFEBDD", view_type = "all",
-  focus = NULL)
+  graph_attrs = "", view_type = "all", focus = NULL)
 }
 \arguments{
 \item{dm}{A data model object}
@@ -16,8 +15,6 @@ dm_create_graph(dm, rankdir = "BT", graph_name = "Data Model",
 \item{graph_name}{A graph name}
 
 \item{graph_attrs}{Additional graph attributes}
-
-\item{title_bgcolor}{The table title background color}
 
 \item{view_type}{Can be "all" (by default), "keys_only" or "title_only".
 It defines the level of details for the table rendering

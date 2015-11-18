@@ -20,6 +20,7 @@ html_tag <- function(x, tag, ident = 0, nl = TRUE, atrs = NULL, collapse = "") {
 html_table <- function(x, ...) html_tag(x, tag = "TABLE", ident = 1, ...)
 html_tr <- function(x, ...)    html_tag(x, tag = "TR", ident = 2, ...)
 html_td <- function(x, ...)    html_tag(x, tag = "TD", ident = 3, nl = FALSE, ...)
+html_font <- function(x, ...)    html_tag(x, tag = "FONT", ident = 0, nl = FALSE, ...)
 
 #' Data frame to html table
 #'
@@ -38,13 +39,20 @@ to_html_table <- function (x,
                            title = "Table",
                            attr_table,
                            attr_header,
+                           attr_font,
                            attr_td = NULL,
                            trans = NULL,
                            cols = names(x)) {
 
   html_table(atrs = attr_table, c(
     # header
-    html_tr(html_td(title, atrs = attr_header, collapse = NULL)),
+    html_tr(
+      html_td(
+        html_font(title, atrs = attr_font),
+        atrs = attr_header,
+        collapse = NULL
+      )
+    ),
     # rows
     sapply(seq_len(nrow(x)), function(r)
       html_tr(c(
@@ -66,22 +74,33 @@ to_html_table <- function (x,
 #'
 #' @param x A data frame with column info
 #' @param title A node title
-#' @param title_bgcolor Title background color
+#' @param palette_id Which color palette should be used (default)
 #' @keywords internal
 #' @references See \url{http://www.graphviz.org/content/node-shapes}
 #' @export
-dot_html_label <- function(x, title, title_bgcolor = "#EFEBDD") {
+dot_html_label <- function(x, title, palette_id = "default" ) {
   cols <- c("ref", "column")
 
+  if(is.null(palette_id)) {
+    palette_id <- "default"
+  }
+
+  border = ifelse(is.null(dm_color(palette_id, "line_color")), 0, 1)
+
   attr_table <- list(
-    ALIGN="LEFT", BORDER=1, CELLBORDER=0, CELLSPACING=0
+    ALIGN="LEFT", BORDER=border, CELLBORDER=0, CELLSPACING=0
   )
+  if(!is.null(dm_color(palette_id, "line_color"))) {
+    attr_table[["COLOR"]] <- dm_color(palette_id, "line_color")
+  }
   attr_header <- list(
-    COLSPAN=length(cols), BGCOLOR=title_bgcolor, BORDER=0
+    COLSPAN=length(cols), BGCOLOR=dm_color(palette_id, "header_bgcolor"), BORDER=0
   )
+  attr_font <- list()
+  attr_font <- list(COLOR = dm_color(palette_id, "header_font"))
 
   attr_td <- function(col_name, row_values, value) {
-    list(ALIGN="LEFT")
+    list(ALIGN="LEFT", BGCOLOR = dm_color(palette_id, "bgcolor"))
   }
 
   # value presentation transformation
@@ -98,6 +117,7 @@ dot_html_label <- function(x, title, title_bgcolor = "#EFEBDD") {
   ret <- to_html_table(x, title = title,
                        attr_table = attr_table,
                        attr_header = attr_header,
+                       attr_font = attr_font,
                        attr_td = attr_td,
                        cols = cols,
                        trans = trans)
@@ -107,9 +127,7 @@ dot_html_label <- function(x, title, title_bgcolor = "#EFEBDD") {
 }
 
 
-dm_create_graph_list <- function(dm, view_type = "all",
-                                 title_bgcolor = "#CCCCCC",
-                                 focus = NULL) {
+dm_create_graph_list <- function(dm, view_type = "all", focus = NULL) {
 
   if(!is.data_model(dm)) stop("Input must be a data model object.")
 
@@ -164,7 +182,7 @@ dm_create_graph_list <- function(dm, view_type = "all",
       dot_html_label(
         tables[[x]],
         title = x,
-        title_bgcolor = title_bgcolor)
+        palette_id = dm$tables[dm$tables$table == x, "display"])
     })
 
   nodes <-
@@ -197,14 +215,13 @@ dm_create_graph_list <- function(dm, view_type = "all",
 #' @param rankdir Graph attribute for direction (eg. 'BT' = bottom --> top)
 #' @param graph_name A graph name
 #' @param graph_attrs Additional graph attributes
-#' @param title_bgcolor The table title background color
 #' @param view_type Can be "all" (by default), "keys_only" or "title_only".
 #'   It defines the level of details for the table rendering
 #'   (all columns, only primary and foreign keys or no columns)
 #' @param focus A list of parameters for rendering (table filter)
 #' @export
 dm_create_graph <- function(dm, rankdir = "BT", graph_name = "Data Model",
-                     graph_attrs = "", title_bgcolor = "#EFEBDD",
+                     graph_attrs = "",
                      view_type = "all", focus = NULL) {
 
   if(!is.data_model(dm)) stop("Input must be a data model object.")
@@ -215,12 +232,12 @@ dm_create_graph <- function(dm, rankdir = "BT", graph_name = "Data Model",
   }
 
   g_list <-
-    dm_create_graph_list(dm, view_type, title_bgcolor, focus)
+    dm_create_graph_list(dm, view_type, focus)
 
   graph <-
     DiagrammeR::create_graph(
       graph_attrs = sprintf('rankdir=%s tooltip="%s" %s', rankdir, graph_name, graph_attrs),
-      node_attrs = 'margin=0 color="gray" fontcolor = "#444444"',
+      node_attrs = 'margin=0 fontcolor = "#444444"',
       nodes_df = do.call(DiagrammeR::create_nodes, g_list$nodes),
       edges_df = if(!is.null(g_list$edges)) do.call(DiagrammeR::create_edges, g_list$edges) else NULL,
       edge_attrs = c('color = "#555555"',"arrowsize = 1")
@@ -302,4 +319,183 @@ dot_graph <- function(graph) {
                  dot_edges)
   ret
 }
+
+#' Datamodel color schema
+#'
+#' Manage color schema for data model diagrams
+#'
+#' @param line_color Rectangle color
+#' @param header_bgcolor Table header background color
+#' @param header_font Table header font color
+#' @param bgcolor Table background color
+#' @export
+#' @examples
+#' col_scheme <-
+#'   dm_color_scheme(
+#'     dm_palette(
+#'       line_color = "#787878",
+#'       header_bgcolor = "#A5A5A5",
+#'       header_font = "#FFFFFF",
+#'       bgcolor = "#E4E4E4"
+#'     ),
+#'     dm_palette(
+#'       line_color = "#41719C",
+#'       header_bgcolor = "#5B9BD5",
+#'       header_font = "#FFFFFF",
+#'       bgcolor = "#D6E1F1"
+#'     ),
+#'     dm_palette(
+#'       line_color = "#BC8C00",
+#'       header_bgcolor = "#FFC000",
+#'       header_font = "#FFFFFF",
+#'       bgcolor = "#FFEAD0"
+#'     )
+#'   )
+dm_palette <- function(line_color = NULL, header_bgcolor, header_font, bgcolor) {
+  list(
+    line_color = line_color,
+    header_bgcolor = header_bgcolor,
+    header_font = header_font,
+    bgcolor = bgcolor
+  )
+}
+
+#' @param ... Palettes for color schema
+#' @export
+#' @rdname dm_palette
+#' @keywords internal
+dm_color_scheme <- function(...) {
+  list(...)
+}
+
+
+#' @param color_scheme New colors created with dm_color_scheme
+#' @export
+#' @rdname dm_palette
+dm_add_colors <- function(color_scheme)
+{
+  old_cs <- dm_get_color_scheme()
+  if(any(names(color_scheme) %in% names(old_cs))) {
+    old_cs[names(color_scheme)] <- NULL
+  }
+  dm_set_color_scheme(c(old_cs, color_scheme))
+}
+
+#' @export
+#' @rdname dm_palette
+dm_get_color_scheme <- function() {
+  getOption("datamodelr.scheme")
+}
+
+#' @export
+#' @rdname dm_palette
+dm_set_color_scheme <- function(color_scheme) {
+  options(datamodelr.scheme = color_scheme)
+}
+
+dm_color <- function(palette_id, what) {
+  color_scheme <- dm_get_color_scheme()
+  if(is.null(color_scheme[[palette_id]])) {
+    palette_id <- "default"
+  }
+  color_scheme[[palette_id]][[what]]
+}
+
+
+.onLoad <- function(libname, pkgname) {
+
+  # initialize default color scheme
+  dm_set_color_scheme(
+
+    dm_color_scheme(
+      default = dm_palette(
+        line_color = "#555555",
+        header_bgcolor = "#EFEBDD",
+        header_font = "#000000",
+        bgcolor = "#FFFFFF"
+      ),
+      accent1nb = dm_palette(
+        header_bgcolor = "#5B9BD5",
+        header_font = "#FFFFFF",
+        bgcolor = "#D6E1F1"
+      ),
+      accent2nb = dm_palette(
+        header_bgcolor = "#ED7D31",
+        header_font = "#FFFFFF",
+        bgcolor = "#F9DBD2"
+      ),
+      accent3nb = dm_palette(
+        header_bgcolor = "#FFC000",
+        header_font = "#FFFFFF",
+        bgcolor = "#FFEAD0"
+      ),
+      accent4nb = dm_palette(
+        header_bgcolor = "#70AD47",
+        header_font = "#FFFFFF",
+        bgcolor = "#D9E6D4"
+      ),
+      accent5nb = dm_palette(
+        header_bgcolor = "#4472C4",
+        header_font = "#FFFFFF",
+        bgcolor = "#D4D9EC"
+      ),
+      accent6nb = dm_palette(
+        header_bgcolor = "#A5A5A5",
+        header_font = "#FFFFFF",
+        bgcolor = "#E4E4E4"
+      ),
+      accent7nb = dm_palette(
+        header_bgcolor = "#787878",
+        header_font = "#FFFFFF",
+        bgcolor = "#D8D8D8"
+      ),
+      accent1 = dm_palette(
+        line_color = "#41719C",
+        header_bgcolor = "#5B9BD5",
+        header_font = "#FFFFFF",
+        bgcolor = "#D6E1F1"
+      ),
+      accent2 = dm_palette(
+        line_color = "#AE5A21",
+        header_bgcolor = "#ED7D31",
+        header_font = "#FFFFFF",
+        bgcolor = "#F9DBD2"
+      ),
+      accent3 = dm_palette(
+        line_color = "#BC8C00",
+        header_bgcolor = "#FFC000",
+        header_font = "#FFFFFF",
+        bgcolor = "#FFEAD0"
+      ),
+      accent4 = dm_palette(
+        line_color = "#507E32",
+        header_bgcolor = "#70AD47",
+        header_font = "#FFFFFF",
+        bgcolor = "#D9E6D4"
+      ),
+      accent5 = dm_palette(
+        line_color = "#2F528F",
+        header_bgcolor = "#4472C4",
+        header_font = "#FFFFFF",
+        bgcolor = "#D4D9EC"
+      ),
+      accent6 = dm_palette(
+        line_color = "#787878",
+        header_bgcolor = "#A5A5A5",
+        header_font = "#FFFFFF",
+        bgcolor = "#E4E4E4"
+      ),
+      accent7 = dm_palette(
+        line_color = "#000000",
+        header_bgcolor = "#787878",
+        header_font = "#FFFFFF",
+        bgcolor = "#D8D8D8"
+      )
+    )
+  )
+}
+
+
+
+
 

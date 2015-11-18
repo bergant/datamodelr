@@ -4,8 +4,8 @@
 \alias{to_html_table}
 \title{Data frame to html table}
 \usage{
-to_html_table(x, title = "Table", attr_table, attr_header, attr_td = NULL,
-  trans = NULL, cols = names(x))
+to_html_table(x, title = "Table", attr_table, attr_header, attr_font,
+  attr_td = NULL, trans = NULL, cols = names(x))
 }
 \arguments{
 \item{x}{A data frame}

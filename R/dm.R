@@ -397,7 +397,26 @@ dm_set_segment <- function(dm, table_segments) {
     stop("Not a data model object.")
   for(s in names(table_segments)) {
     table_names <- table_segments[[s]]
-    dm$tables$segment[dm$tables$name %in% table_names ] <- s
+    dm$tables$segment[dm$tables$table %in% table_names ] <- s
+  }
+  dm
+}
+
+#' Set table display
+#'
+#' Change tables' display in a data model
+#'
+#' @param dm A data model object
+#' @param display A named list of vectors with display as element names
+#'   and tables as values in vectors
+#' @export
+dm_set_display <- function(dm, display) {
+
+  if(!is.data_model(dm))
+    stop("Not a data model object.")
+  for(s in names(display)) {
+    table_names <- display[[s]]
+    dm$tables$display[dm$tables$table %in% table_names ] <- s
   }
   dm
 }

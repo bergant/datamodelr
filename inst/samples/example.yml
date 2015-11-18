@@ -34,6 +34,7 @@
     Price:
 
 - table: Item
+  display: accent1
   segment: *md
   columns:
     Item ID: {key: yes}
