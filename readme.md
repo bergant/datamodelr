@@ -3,7 +3,7 @@
 
 # datamodelr
 
-Data model diagrams with [DiagrammeR](http://rich-iannone.github.io/DiagrammeR/)
+Data model diagrams with [DiagrammeR](http://rich-iannone.github.io/DiagrammeR/).
 
 ## Installation
 
@@ -13,11 +13,13 @@ devtools::install_github("bergant/datamodelr")
 ```
 
 
+
+
 ## Usage
 
 ### Model Definition in YAML
 
-<img width="35%" align="right" src="img/sample.png" />
+<img width="30%" align="right" src="img/sample.png" />
 
 Define a data model in YAML:
 
@@ -271,6 +273,48 @@ dm_render_graph(graph)
 
 ![](img/sample_colors.png)
 
+### Graphwiz Attributes
+To change general graph, node or edge
+[graphwiz](http://www.graphviz.org/doc/info/attrs.html) 
+attributes use `graph_attrs`, `edge_attrs` and `node_attrs` arguments
+when creating graph.  This example changes
+graph background,
+arrow style (edge attribute) and 
+font (node attribute):
+
+
+```r
+
+graph <- dm_create_graph( 
+  dm, 
+  graph_attrs = "rankdir = RL, bgcolor = '#F4F0EF' ", 
+  edge_attrs = "dir = both, arrowtail = crow, arrowhead = odiamond",
+  node_attrs = "fontname = 'Arial'")
+                          
+dm_render_graph(graph)
+```
+
+![](img/attributes.png)
+
+### Additional Column Attributes
+To include additional column attributes set `col_attr` when creating graph:
+
+
+```r
+focus <- list(tables = c(
+    "customer",
+    "rental",
+    "inventory",
+    "film"
+))
+    
+graph <- dm_create_graph( dm_dvdrental, rankdir = "RL", focus = focus,
+                          col_attr = c("column", "type"))
+dm_render_graph(graph)
+```
+
+![](img/col_attributes.png)
+
 ### Shiny Application
 Try **datamodelr** Shiny application:
 
@@ -281,12 +325,14 @@ shiny::runApp(system.file("shiny", package = "datamodelr"))
 
 ![](img/shiny.png)
 
+
+
 ## Utilised Packages 
 datamodelr depends on:
 
 * [DiagrammeR](http://rich-iannone.github.io/DiagrammeR/) for graph rendering
 * [yaml](https://github.com/viking/r-yaml) for parsing YAML files in R
-* RStudio [shiny](https://github.com/rstudio/shiny) and
-   [shinyAce](https://github.com/trestletech/shinyAce) for shiny application demo.
+* RStudio [shiny](http://shiny.rstudio.com/) and
+   [shinyAce](http://trestletech.github.io/shinyAce/) for shiny application demo.
 
 

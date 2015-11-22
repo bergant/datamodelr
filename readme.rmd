@@ -15,7 +15,7 @@ knitr::opts_chunk$set(
 
 # datamodelr
 
-Data model diagrams with [DiagrammeR](http://rich-iannone.github.io/DiagrammeR/)
+Data model diagrams with [DiagrammeR](http://rich-iannone.github.io/DiagrammeR/).
 
 ## Installation
 
@@ -24,11 +24,15 @@ devtools::install_github("bergant/datamodelr")
 ```
 
 
+```{r echo=FALSE}
+eval_render <- FALSE # turn on/off SVG rendering
+```
+
 ## Usage
 
 ### Model Definition in YAML
 
-<img width="35%" align="right" src="img/sample.png" />
+<img width="30%" align="right" src="img/sample.png" />
 
 Define a data model in YAML:
 
@@ -84,7 +88,7 @@ Define a data model in YAML:
 
 Create a data model object with `dm_read_yaml`:
 
-```{r}
+```{r sample}
 library(datamodelr)
 file_path <- system.file("samples/example.yml", package = "datamodelr")
 dm <- dm_read_yaml(file_path)
@@ -92,7 +96,7 @@ dm <- dm_read_yaml(file_path)
 
 Create a graph object to plot the model:
 
-```{r eval=FALSE, fig.height=8}
+```{r sample_render, eval=eval_render, fig.height=8}
 graph <- dm_create_graph(dm, rankdir = "BT")
 dm_render_graph(graph)
 ```
@@ -105,7 +109,7 @@ This example uses [Northwind](https://northwinddatabase.codeplex.com/) sample
 database and [RODBC](http://CRAN.R-project.org/package=RODBC) 
 package as an interface to SQL Server.
 
-```{r}
+```{r sql}
 library(RODBC)
 con <- odbcConnect(dsn = "NW")
 sQuery <- dm_re_query("sqlserver")
@@ -118,7 +122,7 @@ dm_northwind <- as.data_model(dm_northwind)
 
 Plot the result:
 
-```{r eval=FALSE}
+```{r sql_render, eval=eval_render}
 graph <- dm_create_graph(dm_northwind, rankdir = "BT")
 dm_render_graph(graph)
 ```
@@ -132,7 +136,7 @@ This example uses [DVD Rental](http://www.postgresqltutorial.com/postgresql-samp
 sample database and [RPostgreSQL](https://cran.r-project.org/package=RPostgreSQL) 
 package as an interface to PostgreSQL database. 
 
-```{r fig.height=9}
+```{r postgres, fig.height=9}
 library(RPostgreSQL)
 con <- dbConnect(dbDriver("PostgreSQL"), dbname="dvdrental", user ="postgres")
 sQuery <- dm_re_query("postgres")
@@ -143,7 +147,7 @@ dm_dvdrental <- as.data_model(dm_dvdrental)
 ```
 
 Show model:
-```{r eval=FALSE}
+```{r postgres_render, eval=eval_render}
 graph <- dm_create_graph(dm_dvdrental, rankdir = "RL")
 dm_render_graph(graph)
 ```
@@ -153,7 +157,7 @@ dm_render_graph(graph)
 ### Focused Data Model Diagram
 
 To focus in on a few tables from your model use `focus` attribute in `dm_create_graph` function:
-```{r eval=FALSE}
+```{r posgres_focus_render, eval=FALSE}
 focus <- list(tables = c(
     "customer",
     "payment", 
@@ -172,7 +176,7 @@ dm_render_graph(graph)
 To emphasize table relations and hide the "non-key"" 
 columns use `view_type = "keys_only"`:
 
-```{r eval=FALSE}
+```{r postgres_keys_render, eval=eval_render}
 graph <- dm_create_graph(dm_dvdrental, view_type = "keys_only", rankdir = "RL")
 dm_render_graph(graph)
 ```
@@ -182,7 +186,7 @@ dm_render_graph(graph)
 ### Diagram Segments
 Arrange tables in clusters with `dm_set_segment` function: 
 
-```{r}
+```{r postgres_segments}
 table_segments <- list(
   Transactions = c("rental", "inventory", "payment"),
   Party = c("customer", "staff", "address", "city", "country", "store"),
@@ -193,7 +197,7 @@ dm_dvdrental_seg <- dm_set_segment(dm_dvdrental, table_segments)
 ```
 
 Render the clustered diagram with only key columns:
-```{r eval=FALSE}
+```{r postgres_segments_render, eval=eval_render}
 graph <- dm_create_graph(dm_dvdrental_seg, rankdir = "RL", view_type = "keys_only")
 dm_render_graph(graph)
 
@@ -204,7 +208,7 @@ dm_render_graph(graph)
 ### Graph Direction
 Use `rankdir` to change the direction of graph:
 
-```{r eval=FALSE}
+```{r postgres_dir_render, eval=eval_render}
 graph <- dm_create_graph(dm_dvdrental_seg, rankdir = "BT", view_type = "keys_only")
 dm_render_graph(graph)
 ```
@@ -214,7 +218,7 @@ dm_render_graph(graph)
 ### Colors
 To emphasise tables with colors use `dm_set_display` function:
 
-```{r eval=FALSE}
+```{r colors_render, eval=eval_render}
 display <- list(
   accent1 = c("rental", "payment"),
   accent2 = c("customer"),
@@ -230,7 +234,7 @@ dm_render_graph(graph)
 
 
 Default color scheme includes: 
-```{r echo=FALSE, fig.height=2, eval=FALSE}
+```{r color_scheme, echo=FALSE, fig.height=2, eval=FALSE}
 
 dm1 <- dm_read_yaml(text = "
 - table: accent1
@@ -319,7 +323,7 @@ dm_render_graph(g1)
 
 ### Custom Colors
 Add your colors with `dm_add_colors` function:
-```{r eval=FALSE}
+```{r custom_colors, eval=eval_render}
 
 my_colors <-
   dm_color_scheme(
@@ -351,6 +355,46 @@ dm_render_graph(graph)
 
 ![](img/sample_colors.png)
 
+### Graphwiz Attributes
+To change general graph, node or edge
+[graphwiz](http://www.graphviz.org/doc/info/attrs.html) 
+attributes use `graph_attrs`, `edge_attrs` and `node_attrs` arguments
+when creating graph.  This example changes
+graph background,
+arrow style (edge attribute) and 
+font (node attribute):
+
+```{r dot_attributes, eval=eval_render}
+
+graph <- dm_create_graph( 
+  dm, 
+  graph_attrs = "rankdir = RL, bgcolor = '#F4F0EF' ", 
+  edge_attrs = "dir = both, arrowtail = crow, arrowhead = odiamond",
+  node_attrs = "fontname = 'Arial'")
+                          
+dm_render_graph(graph)
+```
+
+![](img/attributes.png)
+
+### Additional Column Attributes
+To include additional column attributes set `col_attr` when creating graph:
+
+```{r col_attr, eval=eval_render}
+focus <- list(tables = c(
+    "customer",
+    "rental",
+    "inventory",
+    "film"
+))
+    
+graph <- dm_create_graph( dm_dvdrental, rankdir = "RL", focus = focus,
+                          col_attr = c("column", "type"))
+dm_render_graph(graph)
+```
+
+![](img/col_attributes.png)
+
 ### Shiny Application
 Try **datamodelr** Shiny application:
 
@@ -360,12 +404,14 @@ shiny::runApp(system.file("shiny", package = "datamodelr"))
 
 ![](img/shiny.png)
 
+
+
 ## Utilised Packages 
 datamodelr depends on:
 
 * [DiagrammeR](http://rich-iannone.github.io/DiagrammeR/) for graph rendering
 * [yaml](https://github.com/viking/r-yaml) for parsing YAML files in R
-* RStudio [shiny](https://github.com/rstudio/shiny) and
-   [shinyAce](https://github.com/trestletech/shinyAce) for shiny application demo.
+* RStudio [shiny](http://shiny.rstudio.com/) and
+   [shinyAce](http://trestletech.github.io/shinyAce/) for shiny application demo.
 
 

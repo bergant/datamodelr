@@ -4,7 +4,7 @@
 \alias{dot_html_label}
 \title{Create a label}
 \usage{
-dot_html_label(x, title, palette_id = "default")
+dot_html_label(x, title, palette_id = "default", col_attr = c("column"))
 }
 \arguments{
 \item{x}{A data frame with column info}
@@ -12,6 +12,9 @@ dot_html_label(x, title, palette_id = "default")
 \item{title}{A node title}
 
 \item{palette_id}{Which color palette should be used (default)}
+
+\item{col_attr}{Column atributes to display.
+Only column name (\code{column}) is included by default.}
 }
 \description{
 Create a label for dot HTML shape

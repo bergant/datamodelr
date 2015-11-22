@@ -75,12 +75,13 @@ to_html_table <- function (x,
 #' @param x A data frame with column info
 #' @param title A node title
 #' @param palette_id Which color palette should be used (default)
+#' @param col_attr Column atributes to display.
+#'   Only column name (\code{column}) is included by default.
 #' @keywords internal
 #' @references See \url{http://www.graphviz.org/content/node-shapes}
 #' @export
-dot_html_label <- function(x, title, palette_id = "default" ) {
-  cols <- c("ref", "column")
-
+dot_html_label <- function(x, title, palette_id = "default", col_attr = c("column") ) {
+  cols <- c("ref", col_attr)
   if(is.null(palette_id)) {
     palette_id <- "default"
   }
@@ -127,7 +128,8 @@ dot_html_label <- function(x, title, palette_id = "default" ) {
 }
 
 
-dm_create_graph_list <- function(dm, view_type = "all", focus = NULL) {
+dm_create_graph_list <- function(dm, view_type = "all",
+                                 focus = NULL, col_attr = "column") {
 
   if(!is.data_model(dm)) stop("Input must be a data model object.")
 
@@ -182,7 +184,8 @@ dm_create_graph_list <- function(dm, view_type = "all", focus = NULL) {
       dot_html_label(
         tables[[x]],
         title = x,
-        palette_id = dm$tables[dm$tables$table == x, "display"])
+        palette_id = dm$tables[dm$tables$table == x, "display"],
+        col_attr = col_attr)
     })
 
   nodes <-
@@ -219,10 +222,15 @@ dm_create_graph_list <- function(dm, view_type = "all", focus = NULL) {
 #'   It defines the level of details for the table rendering
 #'   (all columns, only primary and foreign keys or no columns)
 #' @param focus A list of parameters for rendering (table filter)
+#' @param col_attr Column atributes to display.
+#'   Only column name (\code{column}) is included by default.
 #' @export
 dm_create_graph <- function(dm, rankdir = "BT", graph_name = "Data Model",
                      graph_attrs = "",
-                     view_type = "all", focus = NULL) {
+                     node_attrs = "",
+                     edge_attrs = "",
+                     view_type = "all", focus = NULL,
+                     col_attr = "column") {
 
   if(!is.data_model(dm)) stop("Input must be a data model object.")
 
@@ -231,16 +239,22 @@ dm_create_graph <- function(dm, rankdir = "BT", graph_name = "Data Model",
          call. = FALSE)
   }
 
+  if(!all(col_attr %in% names(dm$columns) )) {
+    stop("Not all col_attr in data model column attributes.")
+  }
   g_list <-
-    dm_create_graph_list(dm, view_type, focus)
-
+    dm_create_graph_list(dm = dm, view_type = view_type,
+                         focus = focus, col_attr = col_attr)
+  if(length(g_list$nodes$nodes) == 0) {
+    warning("The number of tables to render is 0.")
+  }
   graph <-
     DiagrammeR::create_graph(
       graph_attrs = sprintf('rankdir=%s tooltip="%s" %s', rankdir, graph_name, graph_attrs),
-      node_attrs = 'margin=0 fontcolor = "#444444"',
+      node_attrs = sprintf('margin=0 fontcolor = "#444444" %s', node_attrs),
       nodes_df = do.call(DiagrammeR::create_nodes, g_list$nodes),
       edges_df = if(!is.null(g_list$edges)) do.call(DiagrammeR::create_edges, g_list$edges) else NULL,
-      edge_attrs = c('color = "#555555"',"arrowsize = 1")
+      edge_attrs = c('color = "#555555"',"arrowsize = 1", edge_attrs)
     )
 
   # re-create dot code for data model
