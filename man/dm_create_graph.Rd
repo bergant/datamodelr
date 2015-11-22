@@ -17,6 +17,10 @@ dm_create_graph(dm, rankdir = "BT", graph_name = "Data Model",
 
 \item{graph_attrs}{Additional graph attributes}
 
+\item{node_attrs}{Additional node attributes}
+
+\item{edge_attrs}{Additional edge attributes}
+
 \item{view_type}{Can be "all" (by default), "keys_only" or "title_only".
 It defines the level of details for the table rendering
 (all columns, only primary and foreign keys or no columns)}

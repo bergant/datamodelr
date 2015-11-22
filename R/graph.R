@@ -218,6 +218,8 @@ dm_create_graph_list <- function(dm, view_type = "all",
 #' @param rankdir Graph attribute for direction (eg. 'BT' = bottom --> top)
 #' @param graph_name A graph name
 #' @param graph_attrs Additional graph attributes
+#' @param node_attrs Additional node attributes
+#' @param edge_attrs Additional edge attributes
 #' @param view_type Can be "all" (by default), "keys_only" or "title_only".
 #'   It defines the level of details for the table rendering
 #'   (all columns, only primary and foreign keys or no columns)
