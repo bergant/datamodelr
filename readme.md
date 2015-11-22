@@ -273,9 +273,9 @@ dm_render_graph(graph)
 
 ![](img/sample_colors.png)
 
-### Graphwiz Attributes
+### Graphviz Attributes
 To change general graph, node or edge
-[graphwiz](http://www.graphviz.org/doc/info/attrs.html) 
+[graphviz](http://www.graphviz.org/doc/info/attrs.html) 
 attributes use `graph_attrs`, `edge_attrs` and `node_attrs` arguments
 when creating graph.  This example changes
 graph background,
