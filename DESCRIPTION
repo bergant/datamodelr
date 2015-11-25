@@ -1,17 +1,20 @@
 Package: datamodelr
 Type: Package
-Title: Define and plot data models
-Version: 0.1.1.9003
-Date: 2015-11-18
+Title: Define and plot data model diagrams
+Version: 0.1.2
+Date: 2015-11-25
 Author: Darko Bergant
 Maintainer: Darko Bergant <darko.bergant@gmail.com>
-Description: Provides a simple structure to describe data models,
-  a function to read data model from YAML file,
-  and a function to create DiagrammeR graph objects.
-Depends: R (>= 3.2)
+Description: Data model definition with YAML file,
+    extract from R data frames,
+    reverse-engineering from PostgreSQL and SQL Server and
+    rendering vith DiagrammeR graph objects.
+Depends:
+    R (>= 3.2)
 License: MIT + file LICENSE
 Suggests:
     yaml,
     DiagrammeR,
     testthat
 LazyData: TRUE
+RoxygenNote: 5.0.1

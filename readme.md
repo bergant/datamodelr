@@ -1,9 +1,29 @@
 
 
 
+
+
 # datamodelr
 
-Data model diagrams with [DiagrammeR](http://rich-iannone.github.io/DiagrammeR/).
+Define and display data model diagrams:
+
+* Data model definition
+    + Define data model manually with [YAML](#model-definition-in-yaml)
+    + Extract data model from [R data frames](#model-diagram-of-interconnected-data-frames)
+    + Reverse-engineer [SQL Server Database](#reverse-engineer-sql-server-database)
+    + Reverse-engineer [PostgreSQL Database](#reverse-engineer-postgresql-database)
+
+* Rendering
+    + Define model [segments](#diagram-segments)
+    + Display [focused sub-diagram ](#focused-data-model-diagram) or
+    + [Hide columns](#hide-columns) to improve model diagram readability
+    + Use [colors](#colors) to emphasize specific tables
+    + Define [graph direction](#graph-direction) or 
+      other [graphviz attributes](#graphviz-attributes)
+    + Display [additional column attributes](#additional-column-attributes)
+
+Use [shiny](#shiny-application) to implement interactive model definition and 
+rendering.
 
 ## Installation
 
@@ -13,9 +33,10 @@ devtools::install_github("bergant/datamodelr")
 ```
 
 
-
-
 ## Usage
+
+
+
 
 ### Model Definition in YAML
 
@@ -90,9 +111,43 @@ graph <- dm_create_graph(dm, rankdir = "BT")
 dm_render_graph(graph)
 ```
 
+### Model Diagram of Interconnected Data Frames
+Attach flights database 
+([nycflights13](http://github.com/hadley/nycflights13#nycflights13) package) 
+and create a data model from data frames:
 
+```r
+library("nycflights13")
+dm_f <- dm_from_data_frames(flights, airlines, weather, airports, planes)
+```
 
-### Reverse-engineer an Existing Database
+Create plot:
+
+```r
+graph <- dm_create_graph(dm_f, rankdir = "BT", col_attr = c("column", "type"))
+dm_render_graph(graph)
+```
+
+![](img/flights.png)
+
+Add references and primary keys:
+
+```r
+dm_f <- dm_add_reference(dm_f, "flights", "carrier", "airlines", "carrier")
+dm_f <- dm_add_reference(dm_f, "flights", "origin", "airports", "faa")
+dm_f <- dm_add_reference(dm_f, "flights", "dest", "airports", "faa")
+dm_f <- dm_add_reference(dm_f, "weather", "origin", "airports", "faa")
+dm_f <- dm_add_reference(dm_f, "flights", "tailnum", "planes", "tailnum")
+dm_f <- dm_set_key(dm_f, "airlines", "carrier")
+dm_f <- dm_set_key(dm_f, "planes", "tailnum")
+dm_f <- dm_set_key(dm_f, "airports", "faa")
+graph <- dm_create_graph(dm_f, rankdir = "BT", col_attr = c("column", "type"))
+dm_render_graph(graph)
+```
+
+![](img/flights_references.png)
+
+### Reverse-engineer SQL Server Database
 
 This example uses [Northwind](https://northwinddatabase.codeplex.com/) sample
 database and [RODBC](http://CRAN.R-project.org/package=RODBC) 
@@ -121,7 +176,7 @@ dm_render_graph(graph)
 ![](img/northwind.png)
 
 
-### PostgreSQL Example
+### Reverse-engineer PostgreSQL Database
 
 This example uses [DVD Rental](http://www.postgresqltutorial.com/postgresql-sample-database/) 
 sample database and [RPostgreSQL](https://cran.r-project.org/package=RPostgreSQL) 
