@@ -302,9 +302,12 @@ dm_get_table_attrs <- function(x) {
 #'
 #' @param col_table A data frame with table columns
 #' @details The function is used when creating data model object.
-#'   \code{col_table} must have at least table, column and ref elements.
+#'   \code{col_table} must have at least
+#'     \code{table},
+#'     \code{column} and
+#'     \code{ref} elements.
 #'   When referencing to tables with compound primary keys
-#'   additional ref_col with primary key columns must be provided.
+#'   additional \code{ref_col} with primary key columns must be provided.
 #' @export
 #' @keywords internal
 dm_create_references <- function(col_table) {
@@ -365,6 +368,7 @@ dm_create_references <- function(col_table) {
   ref_table
 }
 
+
 #' Create data model object from R data frames
 #'
 #' Uses data frame column names to create a data model diagram
@@ -410,7 +414,7 @@ dm_from_data_frames <- function(...) {
 #' @param ref_col Referenced column(s) name
 #' @return New data model object
 #' @export
-dm_add_reference <- function(dm, table, column, ref = NULL, ref_col = NULL) {
+dm_add_reference_ <- function(dm, table, column, ref = NULL, ref_col = NULL) {
   ref_df <-
     data.frame(
       table = table,
@@ -426,6 +430,57 @@ dm_add_reference <- function(dm, table, column, ref = NULL, ref_col = NULL) {
   dm$columns$ref[dm$columns$table == table & dm$columns$column == column] <- ref
   dm
 }
+
+#' Add references
+#'
+#' Adds references defined with logical expressions from data frames
+#'   in format table1$column1 == table2$column2
+#'
+#' @param dm Data model object
+#' @param ... Logical expressions in format table1$column1 == table2$column2
+#' @export
+#' @examples
+#'   dm_add_references(
+#'     flights$carrier == airlines$carrier,
+#'     weather$origin == airports$faa
+#'   )
+dm_add_references <- function(dm, ...)
+{
+  ref_list <- substitute(list(...))
+
+  if(is.null(dm$columns$ref)) dm$columns$ref <- NA
+  if(is.null(dm$columns$ref_col)) dm$columns$ref_col <- NA
+  if(is.null(dm$columns$key)) dm$columns$key <- FALSE
+
+  for(ref in as.list(ref_list[-1])) {
+    ref <- as.list(ref)
+    if(
+      as.character(ref[1]) != "`==`" ||
+      length(ref) != 3 || length(ref[[2]]) != 3 || length(ref[[3]]) != 3) {
+      stop("Define references with logical expressions:
+           dataframe1$column1 == dataframe2$column2, ...",
+           call. = FALSE)
+    }
+    toChar <- function(ref, i, j) as.character(ref[[i]][[j]])
+
+    table_name  = as.character(ref[[2]][[2]])
+    column_name = as.character(ref[[2]][[3]])
+    ref_table   = as.character(ref[[3]][[2]])
+    ref_col     = as.character(ref[[3]][[3]])
+
+    dm_row <- with(dm$columns, table == table_name & column == column_name)
+    dm$columns[dm_row, "ref"] <- ref_table
+    dm$columns[dm_row, "ref_col"] <- ref_col
+
+    dm_key_row <- dm$columns$table == ref_table & dm$columns$column == ref_col
+    dm$columns[dm_key_row, "key"] <- TRUE
+  }
+
+  ref_table <- dm_create_references(dm$columns)
+  dm$references <- ref_table
+  dm
+}
+
 
 #' Set key
 #'

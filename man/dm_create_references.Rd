@@ -15,9 +15,12 @@ column info table.
 }
 \details{
 The function is used when creating data model object.
-  \code{col_table} must have at least table, column and ref elements.
+  \code{col_table} must have at least
+    \code{table},
+    \code{column} and
+    \code{ref} elements.
   When referencing to tables with compound primary keys
-  additional ref_col with primary key columns must be provided.
+  additional \code{ref_col} with primary key columns must be provided.
 }
 \keyword{internal}
 

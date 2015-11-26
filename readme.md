@@ -133,14 +133,15 @@ dm_render_graph(graph)
 Add references and primary keys:
 
 ```r
-dm_f <- dm_add_reference(dm_f, "flights", "carrier", "airlines", "carrier")
-dm_f <- dm_add_reference(dm_f, "flights", "origin", "airports", "faa")
-dm_f <- dm_add_reference(dm_f, "flights", "dest", "airports", "faa")
-dm_f <- dm_add_reference(dm_f, "weather", "origin", "airports", "faa")
-dm_f <- dm_add_reference(dm_f, "flights", "tailnum", "planes", "tailnum")
-dm_f <- dm_set_key(dm_f, "airlines", "carrier")
-dm_f <- dm_set_key(dm_f, "planes", "tailnum")
-dm_f <- dm_set_key(dm_f, "airports", "faa")
+dm_f <- dm_add_references(
+  dm_f,
+  
+  flights$carrier == airlines$carrier,
+  flights$origin == airports$faa,
+  flights$dest == airports$faa,
+  flights$tailnum == planes$tailnum,
+  weather$origin == airports$faa
+)
 graph <- dm_create_graph(dm_f, rankdir = "BT", col_attr = c("column", "type"))
 dm_render_graph(graph)
 ```
