@@ -1,8 +1,6 @@
 
 
 
-
-
 # datamodelr
 
 Define and display data model diagrams:
@@ -249,12 +247,11 @@ table_segments <- list(
 dm_dvdrental_seg <- dm_set_segment(dm_dvdrental, table_segments)
 ```
 
-Render the clustered diagram with only key columns:
+Render diagram with segments:
 
 ```r
 graph <- dm_create_graph(dm_dvdrental_seg, rankdir = "RL", view_type = "keys_only")
 dm_render_graph(graph)
-
 ```
 
 ![](img/dvdrental_seg.png)
@@ -298,7 +295,6 @@ Default color scheme includes:
 Add your colors with `dm_add_colors` function:
 
 ```r
-
 my_colors <-
   dm_color_scheme(
     purple = dm_palette(
@@ -340,7 +336,6 @@ font (node attribute):
 
 
 ```r
-
 graph <- dm_create_graph( 
   dm, 
   graph_attrs = "rankdir = RL, bgcolor = '#F4F0EF' ", 

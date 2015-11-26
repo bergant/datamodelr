@@ -2,6 +2,7 @@
 output: 
   html_document: 
     keep_md: yes
+    self_contained: no
 ---
 
 ```{r, echo = FALSE}
@@ -10,9 +11,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "img/README-"
 )
-```
 
-```{r echo=FALSE}
 eval_render <- FALSE # turn on/off SVG rendering
 ```
 
@@ -248,11 +247,10 @@ dm_dvdrental_seg <- dm_set_segment(dm_dvdrental, table_segments)
 
 ```
 
-Render the clustered diagram with only key columns:
-```{r postgres_segments_render, eval=eval_render}
+Render diagram with segments:
+```{r postgres_segments_render, eval=eval_render, fig.height=6}
 graph <- dm_create_graph(dm_dvdrental_seg, rankdir = "RL", view_type = "keys_only")
 dm_render_graph(graph)
-
 ```
 
 ![](img/dvdrental_seg.png)
@@ -270,7 +268,7 @@ dm_render_graph(graph)
 ### Colors
 To emphasise tables with colors use `dm_set_display` function:
 
-```{r colors_render, eval=eval_render}
+```{r colors_render, eval=eval_render, fig.height=7}
 display <- list(
   accent1 = c("rental", "payment"),
   accent2 = c("customer"),
@@ -286,7 +284,7 @@ dm_render_graph(graph)
 
 
 Default color scheme includes: 
-```{r color_scheme, echo=FALSE, fig.height=2, eval=FALSE}
+```{r color_scheme, echo=FALSE, fig.height=1, eval=eval_render}
 
 dm1 <- dm_read_yaml(text = "
 - table: accent1
@@ -368,15 +366,13 @@ dm1 <- dm_read_yaml(text = "
 g1 <- dm_create_graph(dm1)
 dm_render_graph(g1)
 
-
 ```
 
 ![](img/colors.png)
 
 ### Custom Colors
 Add your colors with `dm_add_colors` function:
-```{r custom_colors, eval=eval_render}
-
+```{r custom_colors, eval=eval_render, fig.height=4}
 my_colors <-
   dm_color_scheme(
     purple = dm_palette(
@@ -416,8 +412,7 @@ graph background,
 arrow style (edge attribute) and 
 font (node attribute):
 
-```{r dot_attributes, eval=eval_render}
-
+```{r dot_attributes, eval=eval_render, fig.height=4}
 graph <- dm_create_graph( 
   dm, 
   graph_attrs = "rankdir = RL, bgcolor = '#F4F0EF' ", 
