@@ -439,11 +439,6 @@ dm_add_reference_ <- function(dm, table, column, ref = NULL, ref_col = NULL) {
 #' @param dm Data model object
 #' @param ... Logical expressions in format table1$column1 == table2$column2
 #' @export
-#' @examples
-#'   dm_add_references(
-#'     flights$carrier == airlines$carrier,
-#'     weather$origin == airports$faa
-#'   )
 dm_add_references <- function(dm, ...)
 {
   ref_list <- substitute(list(...))
