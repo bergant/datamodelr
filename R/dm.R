@@ -364,7 +364,11 @@ dm_create_references <- function(col_table) {
   }
 
   ref_table$ref_id <- cumsum(key_col_num == 1)
-  ref_table$ref_col_num <- key_col_num
+  if(length(key_col_num) == length(ref_table$ref_col_num)) {
+    ref_table$ref_col_num <- key_col_num
+  } else {
+    ref_table$ref_col_num <- 1
+  }
   ref_table
 }
 
