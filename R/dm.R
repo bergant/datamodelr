@@ -355,19 +355,23 @@ dm_create_references <- function(col_table) {
     # create column index number
     rle1 <- rle(num_col)
     if(lengths(rle1)[1] > 0) {
-      unlist(sapply(1:lengths(rle1)[1], function(i) {
+      col_list <- sapply(1:lengths(rle1)[1], function(i) {
         rep(1 : rle1$values[i], rle1$lengths[i] / rle1$values[i])
-      }))
+      })
+      col_list[lengths(col_list) == 0] <- 1
+      unlist(col_list)
     } else {
       NA
     }
   }
 
-  ref_table$ref_id <- cumsum(key_col_num == 1)
-  if(length(key_col_num) == length(ref_table$ref_col_num)) {
+  dim(key_col_num) <- NULL
+  if(nrow(ref_table) == length(key_col_num)) {
+    ref_table$ref_id <- cumsum(key_col_num == 1)
     ref_table$ref_col_num <- key_col_num
   } else {
     ref_table$ref_col_num <- 1
+    ref_table$ref_id <- cumsum(ref_table$ref_col_num)
   }
   ref_table
 }
