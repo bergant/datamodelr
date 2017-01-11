@@ -1,17 +1,17 @@
 Package: datamodelr
 Type: Package
 Title: Define and plot data model diagrams
-Version: 0.1.2.9002
-Date: 2016-04-12
+Version: 0.2.1.9001
+Date: 2017-01-12
 Author: Darko Bergant
 Maintainer: Darko Bergant <darko.bergant@gmail.com>
 URL: https://github.com/bergant/datamodelr
 Description: Data model definition with YAML file,
     extract from R data frames,
     reverse-engineering from PostgreSQL and SQL Server and
-    rendering with DiagrammeR graph objects.
+    rendering with DiagrammeR/graphviz.
 Depends:
-    R (>= 3.2)
+    R (>= 3.3)
 License: MIT + file LICENSE
 Suggests:
     yaml,

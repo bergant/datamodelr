@@ -189,19 +189,21 @@ dm_create_graph_list <- function(dm, view_type = "all",
     })
 
   nodes <-
-    list(
+    data.frame(
       nodes = names(tables),
       label = g_labels,
       shape = "plaintext",
       type = "upper",
-      segment = dm$tables[order(dm$tables$table), "segment"]
+      segment = dm$tables[order(dm$tables$table), "segment"],
+
+      stringsAsFactors = FALSE
     )
 
 
   if(!is.null(dm$references)) {
     edges <-
       with(dm$references[dm$references$ref_col_num == 1,],
-           DiagrammeR::create_edges(from = table, to = ref))
+           data.frame(from = table, to = ref, stringsAsFactors = FALSE))
   } else {
     edges <- NULL
   }
@@ -236,10 +238,6 @@ dm_create_graph <- function(dm, rankdir = "BT", graph_name = "Data Model",
 
   if(!is.data_model(dm)) stop("Input must be a data model object.")
 
-  if( !requireNamespace("DiagrammeR", quietly = TRUE)) {
-    stop("DiagrammeR package needed for this function to work. Please install it.",
-         call. = FALSE)
-  }
 
   if(!all(col_attr %in% names(dm$columns) )) {
     stop("Not all col_attr in data model column attributes.")
@@ -251,18 +249,19 @@ dm_create_graph <- function(dm, rankdir = "BT", graph_name = "Data Model",
     warning("The number of tables to render is 0.")
   }
   graph <-
-    DiagrammeR::create_graph(
+    list(
       graph_attrs = sprintf('rankdir=%s tooltip="%s" %s', rankdir, graph_name, graph_attrs),
       node_attrs = sprintf('margin=0 fontcolor = "#444444" %s', node_attrs),
-      nodes_df = do.call(DiagrammeR::create_nodes, g_list$nodes),
-      edges_df = if(!is.null(g_list$edges)) do.call(DiagrammeR::create_edges, g_list$edges) else NULL,
+      nodes_df = g_list$nodes,
+      edges_df = g_list$edges,
       edge_attrs = c('color = "#555555"',"arrowsize = 1", edge_attrs)
     )
+  class(graph) <- c("datamodelr_graph", class(graph))
 
   # re-create dot code for data model
   # (DiagrammeR does not support yet the HTML labels and clusters (v.0.8))
   graph$dot_code <- dot_graph(graph)
-  sessionInfo()
+
   graph
 
 }
@@ -270,34 +269,32 @@ dm_create_graph <- function(dm, rankdir = "BT", graph_name = "Data Model",
 
 #' Render graph
 #'
-#' A wrapper around DiagrammeR::render_graph
+#' Using DiagrammeR to render datamodelr graph object
 #'
-#' @param graph	a \pkg{DiagrammeR} dgr_graph object
-#' @param  output	string specifying the output type; graph (the default) renders
-#'   the graph using the grViz function,
-#'   vivagraph renders the graph using the vivagraph function,
-#'   visNetwork renders the graph using the visnetwork function,
-#'   DOT outputs DOT code for the graph, and SVG provides SVG code for the rendered graph.
-#' @param layout	a string specifying a layout type for a vivagraph rendering of the graph,
-#'   either forceDirected or constant.
+#' @param graph	a graph object
 #' @param width	an optional parameter for specifying the width of the resulting
 #' graphic in pixels.
 #' @param height an optional parameter for specifying the height of the resulting graphic in pixels.
 #' @export
-dm_render_graph <- function (graph, output = "graph", layout = NULL, width = NULL,
-                       height = NULL) {
+dm_render_graph <- function (graph, width = NULL, height = NULL) {
 
-  if(substring(graph$dot_code, 1, 11) != "#data_model") {
+  if( !requireNamespace("DiagrammeR", quietly = TRUE)) {
+    stop("DiagrammeR package needed for this function to work. Please install it.",
+         call. = FALSE)
+  }
+
+
+  if(is.null(graph$dot_code)) {
     graph$dot_code <- dot_graph(graph)
   }
 
-  DiagrammeR::render_graph(graph, output, layout, width, height)
+  DiagrammeR::grViz(graph$dot_code, allow_subst = FALSE, width, height)
 }
 
 
 dot_graph <- function(graph) {
 
-  graph_type <- ifelse(graph$directed, "digraph", "graph")
+  graph_type <- "digraph"
 
   dot_attr <- paste0(
     sprintf("graph [%s]\n\n", paste(graph$graph_attrs, collapse = ", ")),
@@ -306,7 +303,7 @@ dot_graph <- function(graph) {
   )
   segments <- unique(graph$nodes_df$segment)
   segments <- segments[!is.na(segments)]
-  segments <- setNames(1:(length(segments)), segments)
+  segments <- stats::setNames(1:(length(segments)), segments)
 
   dot_nodes <- sapply(seq_len(nrow(graph$nodes_df)), function(n) {
     node <- graph$nodes_df[n,]
