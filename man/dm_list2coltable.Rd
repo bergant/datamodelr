@@ -17,4 +17,3 @@ The funcion is used when creating data model object
   from list provided by yaml parser.
 }
 \keyword{internal}
-

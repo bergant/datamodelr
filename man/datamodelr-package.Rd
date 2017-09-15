@@ -2,8 +2,8 @@
 % Please edit documentation in R/dm.R
 \docType{package}
 \name{datamodelr-package}
-\alias{datamodelr}
 \alias{datamodelr-package}
+\alias{datamodelr}
 \title{datamodelr: data model diagrams}
 \description{
 Provides a simple structure to describe data models,
@@ -15,10 +15,13 @@ and a function to create DiagrammeR graph objects:
   \item \pkg{datamodelr}'s data model object is a simple list of data frames which
     represent the model entities and include elements and their relations.
     See \code{\link{as.data_model}}.
+  \item Function \code{\link{as.data_model}} creates a
+    data model object from a data frame.
   \item Function \code{\link{dm_read_yaml}} reads YAML format and creates a
     data model object.
-  \item Function \code{\link{dm_create_graph}} creates DiagrammeR graph object from
+  \item Function \code{\link{dm_create_graph}} creates a graph object from
     data model object.
+  \item Function \code{\link{dm_render_graph}} renders a graph object (using
+  DiagrammeR package).
 }
 }
-

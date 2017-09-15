@@ -5,13 +5,13 @@
 
 Define and display data model diagrams:
 
-* Data model definition
+* __Data model definition__
     + Define data model manually with [YAML](#model-definition-in-yaml)
     + Extract data model from [R data frames](#model-diagram-of-interconnected-data-frames)
     + Reverse-engineer [SQL Server Database](#reverse-engineer-sql-server-database)
     + Reverse-engineer [PostgreSQL Database](#reverse-engineer-postgresql-database)
 
-* Rendering
+* __Rendering__
     + Define model [segments](#diagram-segments)
     + Display [focused sub-diagram ](#focused-data-model-diagram) or
     + [Hide columns](#hide-columns) to improve model diagram readability

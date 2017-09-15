@@ -12,8 +12,10 @@ as.data_model(x)
 \value{
 If possible it returns a data model object.
   It is a list of data frames with at least the following columns:
+  \item{ table }{A table name}
   \item{ column }{A name of the column in a table}
-  \item{ key }{A boolean value indicating this column is a primary key or NA.}
+  \item{ key }{A boolean value indicating this column is in a primary key.
+  Use integer values with order for compound keys }
   \item{ ref }{A character string with a referenced table name.
     Not being NA means the column is a foreign key.}
 }
@@ -29,4 +31,3 @@ Function accepts a data frame with columns info.
     referenced table name primary key (only necessery when referenced
     table has a compound primary key).
 }
-

@@ -15,4 +15,3 @@ dm_add_references(dm, ...)
 Adds references defined with logical expressions from data frames
   in format table1$column1 == table2$column2
 }
-

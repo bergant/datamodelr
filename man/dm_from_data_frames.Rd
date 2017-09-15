@@ -12,4 +12,3 @@ dm_from_data_frames(...)
 \description{
 Uses data frame column names to create a data model diagram
 }
-

@@ -16,4 +16,3 @@ dm_set_key(dm, table, column)
 \description{
 Set column as a primary key
 }
-

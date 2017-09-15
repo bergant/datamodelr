@@ -510,5 +510,82 @@ dm_color <- function(palette_id, what) {
 
 
 
+#' Get graph SVG
+#'
+#' Convert diagram graph object to SVG format
+#'
+#' @param graph a graph object
+#' @return character in SVG format
+#' @export
+dm_get_graph_svg <- function(graph) {
 
+  if (!inherits(graph, "datamodelr_graph"))
+    "graph must be a datamodelr graph object"
+
+  if (!requireNamespace("V8"))
+    stop("V8 is required to export.", call. = FALSE)
+  stopifnot(utils::packageVersion("V8") >= "0.10")
+
+  gv <- dm_render_graph(graph)
+  ct <- V8::new_context("window")
+  invisible(ct$source(system.file("htmlwidgets/lib/viz/viz.js",
+                                  package = "DiagrammeR")))
+  invisible(
+    ct$call("Viz", gv$x$diagram, "svg", gv$x$config$engine, gv$x$config$options)
+  )
+
+}
+
+
+#' Export graph to file
+#'
+#' Export data model graph object object to PNG, PDF, PS or SVG file.
+#'
+#' @param graph a graph object
+#' @param file_name file name
+#' @param file_type file type (if not provided, file name extension is used)
+#' @param width width
+#' @param height height
+#' @export
+dm_export_graph <- function(graph, file_name = NULL, file_type = NULL, width = NULL, height = NULL) {
+
+  if(is.null(file_name)) {
+    file_name <- format(Sys.time(), "dm_%Y%m%d_%H%M%S")
+  }
+  if(is.null(file_type) && grepl("\\.", file_name)) {
+    file_type <- gsub(".*\\.([A-Za-z])", "\\1", file_name)
+  }
+
+  if(is.null(file_type)) {
+    stop("File type not defined")
+  }
+
+  if (!("rsvg" %in% rownames(utils::installed.packages()))) {
+    stop("To use this function to produce an image file, please install the `rsvg` package.")
+  }
+
+  render_functions <- list(
+    png = rsvg::rsvg_png,
+    pdf = rsvg::rsvg_pdf,
+    svg = rsvg::rsvg_svg,
+    ps = rsvg::rsvg_ps
+  )
+
+
+  if(!tolower(file_type) %in% names(render_functions) ) {
+    stop("File type can be only pdf, png or ps.")
+  }
+
+  render_function <- render_functions[[tolower(file_type)]]
+
+  render_function(
+    charToRaw(
+      dm_get_graph_svg(graph)
+    ),
+    file = file_name,
+    width = width,
+    height = height
+  )
+
+}
 

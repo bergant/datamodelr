@@ -21,4 +21,3 @@ dm_set_col_attr(dm, table, column, attr, value)
 Set column attribute value
 }
 \keyword{internal}
-

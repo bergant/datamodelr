@@ -17,4 +17,3 @@ graphic in pixels.}
 \description{
 Using DiagrammeR to render datamodelr graph object
 }
-

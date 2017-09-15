@@ -25,4 +25,3 @@ returns a named list with current cell attributes}
 Used to create graphwiz dot HTML table labels
 }
 \keyword{internal}
-

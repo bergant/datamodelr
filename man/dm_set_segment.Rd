@@ -15,4 +15,3 @@ and tables as values in vectors}
 \description{
 Change tables' segment name in a data model
 }
-

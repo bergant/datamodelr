@@ -10,4 +10,3 @@
 Coerce a data frame to a data model
 }
 \keyword{internal}
-

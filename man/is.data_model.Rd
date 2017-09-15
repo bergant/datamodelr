@@ -13,4 +13,3 @@ is.data_model(x)
 Check if object is a data model
 }
 \keyword{internal}
-

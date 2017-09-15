@@ -9,10 +9,14 @@
 #'   \item \pkg{datamodelr}'s data model object is a simple list of data frames which
 #'     represent the model entities and include elements and their relations.
 #'     See \code{\link{as.data_model}}.
+#'   \item Function \code{\link{as.data_model}} creates a
+#'     data model object from a data frame.
 #'   \item Function \code{\link{dm_read_yaml}} reads YAML format and creates a
 #'     data model object.
-#'   \item Function \code{\link{dm_create_graph}} creates DiagrammeR graph object from
+#'   \item Function \code{\link{dm_create_graph}} creates a graph object from
 #'     data model object.
+#'   \item Function \code{\link{dm_render_graph}} renders a graph object (using
+#'   DiagrammeR package).
 #' }
 #'
 #' @docType package
@@ -35,8 +39,10 @@ NULL
 #' @aliases as.data_model
 #' @return If possible it returns a data model object.
 #'   It is a list of data frames with at least the following columns:
+#'   \item{ table }{A table name}
 #'   \item{ column }{A name of the column in a table}
-#'   \item{ key }{A boolean value indicating this column is a primary key or NA.}
+#'   \item{ key }{A boolean value indicating this column is in a primary key.
+#'   Use integer values with order for compound keys }
 #'   \item{ ref }{A character string with a referenced table name.
 #'     Not being NA means the column is a foreign key.}
 #' @export

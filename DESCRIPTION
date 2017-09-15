@@ -1,8 +1,8 @@
 Package: datamodelr
 Type: Package
-Title: Define and plot data model diagrams
-Version: 0.2.1.9001
-Date: 2017-01-12
+Title: Define and Plot Data Model Diagrams
+Version: 0.2.2.9001
+Date: 2017-09-15
 Author: Darko Bergant
 Maintainer: Darko Bergant <darko.bergant@gmail.com>
 URL: https://github.com/bergant/datamodelr
@@ -16,6 +16,8 @@ License: MIT + file LICENSE
 Suggests:
     yaml,
     DiagrammeR,
-    testthat
+    testthat,
+    V8,
+    rsvg
 LazyData: TRUE
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1

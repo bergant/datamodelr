@@ -15,4 +15,3 @@ and tables as values in vectors}
 \description{
 Change tables' display in a data model
 }
-

@@ -23,4 +23,3 @@ The function is used when creating data model object.
   additional \code{ref_col} with primary key columns must be provided.
 }
 \keyword{internal}
-

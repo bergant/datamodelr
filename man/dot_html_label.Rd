@@ -23,4 +23,3 @@ Create a label for dot HTML shape
 See \url{http://www.graphviz.org/content/node-shapes}
 }
 \keyword{internal}
-

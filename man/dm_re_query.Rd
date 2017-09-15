@@ -25,4 +25,3 @@ dm_dvdrental <- dbGetQuery(con, sQuery)
 dbDisconnect(con)
 }
 }
-

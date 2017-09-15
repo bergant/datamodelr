@@ -19,13 +19,13 @@ eval_render <- FALSE # turn on/off SVG rendering
 
 Define and display data model diagrams:
 
-* Data model definition
+* __Data model definition__
     + Define data model manually with [YAML](#model-definition-in-yaml)
     + Extract data model from [R data frames](#model-diagram-of-interconnected-data-frames)
     + Reverse-engineer [SQL Server Database](#reverse-engineer-sql-server-database)
     + Reverse-engineer [PostgreSQL Database](#reverse-engineer-postgresql-database)
 
-* Rendering
+* __Rendering__
     + Define model [segments](#diagram-segments)
     + Display [focused sub-diagram ](#focused-data-model-diagram) or
     + [Hide columns](#hide-columns) to improve model diagram readability
@@ -125,6 +125,7 @@ Attach flights database
 ([nycflights13](http://github.com/hadley/nycflights13#nycflights13) package) 
 and create a data model from data frames:
 ```{r flights }
+#install.packages("nycflights13")
 library("nycflights13")
 dm_f <- dm_from_data_frames(flights, airlines, weather, airports, planes)
 ```

@@ -33,4 +33,3 @@ Only column name (\code{column}) is included by default.}
 \description{
 Create a graph object from data model object
 }
-
