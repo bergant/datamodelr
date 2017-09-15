@@ -109,7 +109,7 @@ dot_html_label <- function(x, title, palette_id = "default", col_attr = c("colum
     if(col_name == "ref") {
       value <- ifelse(is.na(value), "", "~")
     }
-    if(col_name == "column" && row_values[,"key"]) {
+    if(col_name == "column" && row_values[["key"]]) {
       value <- sprintf("<U>%s</U>", value)
     }
     ifelse(is.na(value), "", value)
