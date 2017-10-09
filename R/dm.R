@@ -352,7 +352,7 @@ dm_create_references <- function(col_table) {
 
   # number of columns in primary key
   num_col = sapply(ref_table$ref, function(x)
-    length(col_table[col_table$table == x & col_table$key, "column"])
+    length(col_table[col_table$table == x & col_table$key, ][["column"]])
   )
   num_col[num_col == 0L] <- 1L
 
@@ -441,7 +441,7 @@ dm_add_reference_ <- function(dm, table, column, ref = NULL, ref_col = NULL) {
       stringsAsFactors = FALSE
     )
   dm$references <- rbind(dm$references, ref_df)
-  dm$columns$ref[dm$columns$table == table & dm$columns$column == column] <- ref
+  dm$columns$ref[dm$columns$table == table & dm$columns$column %in% column] <- ref
   dm
 }
 
