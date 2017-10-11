@@ -2,6 +2,8 @@
 
 S3method(as.data_model,data.frame)
 S3method(as.data_model,list)
+S3method(print,data_model)
+S3method(print,datamodelr_graph)
 export(as.data_model)
 export(dm_add_colors)
 export(dm_add_reference_)

@@ -288,7 +288,7 @@ dm_render_graph <- function (graph, width = NULL, height = NULL) {
     graph$dot_code <- dot_graph(graph)
   }
 
-  DiagrammeR::grViz(graph$dot_code, allow_subst = FALSE, width, height)
+  print(DiagrammeR::grViz(graph$dot_code, allow_subst = FALSE, width, height))
 }
 
 
@@ -589,3 +589,11 @@ dm_export_graph <- function(graph, file_name = NULL, file_type = NULL, width = N
 
 }
 
+#' Print data model graph
+#'
+#' @param x data model object
+#' @param ... parameter passed to \link{dm_render_graph}
+#' @export
+print.datamodelr_graph <- function(x, ...) {
+  dm_render_graph(x, ...)
+}

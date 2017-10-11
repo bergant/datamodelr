@@ -7,7 +7,7 @@
 as.data_model(x)
 }
 \arguments{
-\item{x}{Object (list or data frame) to be coerced to data model object}
+\item{x}{A data frame to be coerced to data model object}
 }
 \value{
 If possible it returns a data model object.
@@ -17,7 +17,9 @@ If possible it returns a data model object.
   \item{ key }{A boolean value indicating this column is in a primary key.
   Use integer values with order for compound keys }
   \item{ ref }{A character string with a referenced table name.
-    Not being NA means the column is a foreign key.}
+    If exists (not NA) then the column is a foreign key.}
+  \item{ ref_col }{A character string with a referenced table name column.
+    This is only necessary when referenced table has multi-column key}
 }
 \description{
 Functions to coerce an object to a data model if possible.

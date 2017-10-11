@@ -35,7 +35,7 @@ NULL
 #'   Optional element 'ref_col' (character string) defines a column in a
 #'     referenced table name primary key (only necessery when referenced
 #'     table has a compound primary key).
-#' @param x Object (list or data frame) to be coerced to data model object
+#' @param x A data frame to be coerced to data model object
 #' @aliases as.data_model
 #' @return If possible it returns a data model object.
 #'   It is a list of data frames with at least the following columns:
@@ -44,7 +44,9 @@ NULL
 #'   \item{ key }{A boolean value indicating this column is in a primary key.
 #'   Use integer values with order for compound keys }
 #'   \item{ ref }{A character string with a referenced table name.
-#'     Not being NA means the column is a foreign key.}
+#'     If exists (not NA) then the column is a foreign key.}
+#'   \item{ ref_col }{A character string with a referenced table name column.
+#'     This is only necessary when referenced table has multi-column key}
 #' @export
 as.data_model <- function(x) {
   UseMethod("as.data_model")
@@ -89,9 +91,9 @@ as.data_model.data.frame <- function(x) {
   }
 
   if(!is.null(x[["key"]])) {
-    x[is.na(x[,"key"]), "key"] <- FALSE
+    x[is.na(x[,"key"]), "key"] <- 0
   } else {
-    x[,"key"] <- FALSE
+    x[,"key"] <- 0
   }
 
   if(is.null(x[["ref"]])) x[["ref"]] <- NA
@@ -500,11 +502,11 @@ dm_add_references <- function(dm, ...)
 #' @param column Column(s) name
 #' @export
 dm_set_key <- function(dm, table, column) {
-  update_cols <- dm$columns$table == table & dm$columns$column == column
+  update_cols <- dm$columns$table == table & dm$columns$column %in% column
   if(!any(update_cols)) {
     stop("Column not found.")
   }
-  dm$columns$key[update_cols] <- TRUE
+  dm$columns$key[update_cols] <- seq_along(column)
   dm
 }
 
@@ -593,3 +595,22 @@ dm_set_display <- function(dm, display) {
   }
   dm
 }
+
+#' Print data model graph
+#'
+#' @param x data model object.
+#' @param ... further arguments passed to or from other methods.
+#' @export
+print.data_model <- function(x, ...) {
+  cat("Data model object:\n")
+  tables <- paste(utils::head(x$tables$table, 4), collapse = ", ")
+  if(length(x$tables$table) > 4) {
+    tables <- paste(tables, "...")
+  }
+  cat(" ", nrow(x$tables), "tables: ", tables,"\n")
+  cat(" ", nrow(x$columns), "columns\n")
+  cat(" ", ifelse(is.null(x$references), "no", nrow(x$references)),
+      "references\n")
+}
+
+
