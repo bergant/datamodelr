@@ -171,7 +171,7 @@ dm_create_graph_list <- function(dm, view_type = "all",
 
           keys_only = {
             tables <- lapply(tables, function(tab)
-              tab[tab[,"key"] == TRUE | !is.na(tab[,"ref"]), ])
+              tab[tab[["key"]] > 0 | !is.na(tab[,"ref"]), ])
           },
 
           title_only = {
@@ -288,7 +288,7 @@ dm_render_graph <- function (graph, width = NULL, height = NULL) {
     graph$dot_code <- dot_graph(graph)
   }
 
-  print(DiagrammeR::grViz(graph$dot_code, allow_subst = FALSE, width, height))
+  DiagrammeR::grViz(graph$dot_code, allow_subst = FALSE, width, height)
 }
 
 
@@ -595,5 +595,6 @@ dm_export_graph <- function(graph, file_name = NULL, file_type = NULL, width = N
 #' @param ... parameter passed to \link{dm_render_graph}
 #' @export
 print.datamodelr_graph <- function(x, ...) {
-  dm_render_graph(x, ...)
+  w <- dm_render_graph(x)
+  print(w, ...)
 }

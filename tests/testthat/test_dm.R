@@ -67,8 +67,8 @@ test_that("Example yaml", {
   dm <- dm_read_yaml(file_path)
 
   expect_is(dm, "data_model")
-  expect_more_than(nrow(dm$columns), 5)
-  expect_more_than(nrow(dm$references), 1)
+  expect_gt(nrow(dm$columns), 5)
+  expect_gt(nrow(dm$references), 1)
 })
 
 

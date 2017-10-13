@@ -1,0 +1,372 @@
+"table","column","description"
+"1","Master","playerID","Player ID code"
+"2","Master","the","data in"
+"3","Master","birthYear","Year player was born"
+"4","Master","birthMonth","Month player was born"
+"5","Master","birthDay","Day player was born"
+"6","Master","birthCountry","Country where player was born"
+"7","Master","birthState","State where player was born"
+"8","Master","birthCity","City where player was born"
+"9","Master","deathYear","Year player died"
+"10","Master","deathMonth","Month player died"
+"11","Master","deathDay","Day player died"
+"12","Master","deathCountry","Country where player died"
+"13","Master","deathState","State where player died"
+"14","Master","deathCity","City where player died"
+"15","Master","nameFirst","Players first name
+16	Master	nameLast	Players last name"
+"17","Master","nameGiven","Players given name (typically first and middle)
+18	Master	weight	Players weight in pounds"
+"19","Master","height","Players height in inches
+20	Master	bats	Players batting hand (left, right, or both)"
+"21","Master","throws","Players throwing hand (left or right)
+22	Master	debut	Date that player made first major league appearance
+23	Master	finalGame	Date that player made first major league appearance (blank if still active)
+24	Master	retroID	ID used by retrosheet
+25	Master	bbrefID	ID used by Baseball Reference website
+26	Batting	playerID	Player ID code
+27	Batting	yearID	Year
+28	Batting	stint	players stint (order of appearances within a season)"
+"29","Batting","teamID","Team"
+"30","Batting","lgID","League"
+"31","Batting","G","Games"
+"32","Batting","AB","At Bats"
+"33","Batting","R","Runs"
+"34","Batting","H","Hits"
+"35","Batting","2B","Doubles"
+"36","Batting","3B","Triples"
+"37","Batting","HR","Homeruns"
+"38","Batting","RBI","Runs Batted In"
+"39","Batting","SB","Stolen Bases"
+"40","Batting","CS","Caught Stealing"
+"41","Batting","BB","Base on Balls"
+"42","Batting","SO","Strikeouts"
+"43","Batting","IBB","Intentional walks"
+"44","Batting","HBP","Hit by pitch"
+"45","Batting","SH","Sacrifice hits"
+"46","Batting","SF","Sacrifice flies"
+"47","Batting","GIDP","Grounded into double plays"
+"48","Pitching","playerID","Player ID code"
+"49","Pitching","yearID","Year"
+"50","Pitching","stint","players stint (order of appearances within a season)
+51	Pitching	teamID	Team
+52	Pitching	lgID	League
+53	Pitching	W	Wins
+54	Pitching	L	Losses
+55	Pitching	G	Games
+56	Pitching	GS	Games Started
+57	Pitching	CG	Complete Games
+58	Pitching	SHO	Shutouts
+59	Pitching	SV	Saves
+60	Pitching	IPOuts	Outs Pitched (innings pitched x 3)
+61	Pitching	H	Hits
+62	Pitching	ER	Earned Runs
+63	Pitching	HR	Homeruns
+64	Pitching	BB	Walks
+65	Pitching	SO	Strikeouts
+66	Pitching	BAOpp	Opponents Batting Average"
+"67","Pitching","ERA","Earned Run Average"
+"68","Pitching","IBB","Intentional Walks"
+"69","Pitching","WP","Wild Pitches"
+"70","Pitching","HBP","Batters Hit By Pitch"
+"71","Pitching","BK","Balks"
+"72","Pitching","BFP","Batters faced by Pitcher"
+"73","Pitching","GF","Games Finished"
+"74","Pitching","R","Runs Allowed"
+"75","Pitching","SH","Sacrifices by opposing batters"
+"76","Pitching","SF","Sacrifice flies by opposing batters"
+"77","Pitching","GIDP","Grounded into double plays by opposing batter"
+"78","Fielding","playerID","Player ID code"
+"79","Fielding","yearID","Year"
+"80","Fielding","stint","players stint (order of appearances within a season)
+81	Fielding	teamID	Team
+82	Fielding	lgID	League
+83	Fielding	Pos	Position
+84	Fielding	G	Games
+85	Fielding	GS	Games Started
+86	Fielding	InnOuts	Time played in the field expressed as outs
+87	Fielding	PO	Putouts
+88	Fielding	A	Assists
+89	Fielding	E	Errors
+90	Fielding	DP	Double Plays
+91	Fielding	PB	Passed Balls (by catchers)
+92	Fielding	WP	Wild Pitches (by catchers)
+93	Fielding	SB	Opponent Stolen Bases (by catchers)
+94	Fielding	CS	Opponents Caught Stealing (by catchers)
+95	Fielding	ZR	Zone Rating
+96	AllstarFull	playerID	Player ID code
+97	AllstarFull	YearID	Year
+98	AllstarFull	gameNum	Game number (zero if only one All-Star game played that season)
+99	AllstarFull	gameID	Retrosheet ID for the game idea
+100	AllstarFull	teamID	Team
+101	AllstarFull	lgID	League
+102	AllstarFull	GP	1 if Played in the game
+103	AllstarFull	startingPos	If player was game starter, the position played
+104	HallOfFame	playerID	Player ID code
+105	HallOfFame	yearID	Year of ballot
+106	HallOfFame	votedBy	Method by which player was voted upon
+107	HallOfFame	ballots	Total ballots cast in that year
+108	HallOfFame	needed	Number of votes needed for selection in that year
+109	HallOfFame	votes	Total votes received
+110	HallOfFame	inducted	Whether player was inducted by that vote or not (Y or N)
+111	HallOfFame	category	Category in which candidate was honored
+112	HallOfFame	needed_note	Explanation of qualifiers for special elections
+113	Managers	NA	
+114	Managers	playerID	Player ID Number
+115	Managers	yearID	Year
+116	Managers	teamID	Team
+117	Managers	lgID	League
+118	Managers	inseason	Managerial order. Zero if the individual managed the team
+119	Managers	the	entire year.
+120	Managers	in	the managerial
+121	Managers	G	Games managed
+122	Managers	W	Wins
+123	Managers	L	Losses
+124	Managers	rank	Teams final position in standings that year"
+"125","Managers","plyrMgr","Player Manager (denoted by Y)"
+"126","Teams","yearID","Year"
+"127","Teams","lgID","League"
+"128","Teams","teamID","Team"
+"129","Teams","franchID","Franchise (links to TeamsFranchise table)"
+"130","Teams","divID","Teams division
+131	Teams	Rank	Position in final standings
+132	Teams	G	Games played
+133	Teams	GHome	Games played at home
+134	Teams	W	Wins
+135	Teams	L	Losses
+136	Teams	DivWin	Division Winner (Y or N)
+137	Teams	WCWin	Wild Card Winner (Y or N)
+138	Teams	LgWin	League Champion(Y or N)
+139	Teams	WSWin	World Series Winner (Y or N)
+140	Teams	R	Runs scored
+141	Teams	AB	At bats
+142	Teams	H	Hits by batters
+143	Teams	2B	Doubles
+144	Teams	3B	Triples
+145	Teams	HR	Homeruns by batters
+146	Teams	BB	Walks by batters
+147	Teams	SO	Strikeouts by batters
+148	Teams	SB	Stolen bases
+149	Teams	CS	Caught stealing
+150	Teams	HBP	Batters hit by pitch
+151	Teams	SF	Sacrifice flies
+152	Teams	RA	Opponents runs scored
+153	Teams	ER	Earned runs allowed
+154	Teams	ERA	Earned run average
+155	Teams	CG	Complete games
+156	Teams	SHO	Shutouts
+157	Teams	SV	Saves
+158	Teams	IPOuts	Outs Pitched (innings pitched x 3)
+159	Teams	HA	Hits allowed
+160	Teams	HRA	Homeruns allowed
+161	Teams	BBA	Walks allowed
+162	Teams	SOA	Strikeouts by pitchers
+163	Teams	E	Errors
+164	Teams	DP	Double Plays
+165	Teams	FP	Fielding percentage
+166	Teams	name	Teams full name"
+"167","Teams","park","Name of teams home ballpark
+168	Teams	attendance	Home attendance total
+169	Teams	BPF	Three-year park factor for batters
+170	Teams	PPF	Three-year park factor for pitchers
+171	Teams	teamIDBR	Team ID used by Baseball Reference website
+172	Teams	teamIDlahman45	Team ID used in Lahman database version 4.5
+173	Teams	teamIDretro	Team ID used by Retrosheet
+174	BattingPost	yearID	Year
+175	BattingPost	round	Level of playoffs
+176	BattingPost	playerID	Player ID code
+177	BattingPost	teamID	Team
+178	BattingPost	lgID	League
+179	BattingPost	G	Games
+180	BattingPost	AB	At Bats
+181	BattingPost	R	Runs
+182	BattingPost	H	Hits
+183	BattingPost	2B	Doubles
+184	BattingPost	3B	Triples
+185	BattingPost	HR	Homeruns
+186	BattingPost	RBI	Runs Batted In
+187	BattingPost	SB	Stolen Bases
+188	BattingPost	CS	Caught stealing
+189	BattingPost	BB	Base on Balls
+190	BattingPost	SO	Strikeouts
+191	BattingPost	IBB	Intentional walks
+192	BattingPost	HBP	Hit by pitch
+193	BattingPost	SH	Sacrifices
+194	BattingPost	SF	Sacrifice flies
+195	BattingPost	GIDP	Grounded into double plays
+196	PitchingPost	playerID	Player ID code
+197	PitchingPost	yearID	Year
+198	PitchingPost	round	Level of playoffs
+199	PitchingPost	teamID	Team
+200	PitchingPost	lgID	League
+201	PitchingPost	W	Wins
+202	PitchingPost	L	Losses
+203	PitchingPost	G	Games
+204	PitchingPost	GS	Games Started
+205	PitchingPost	CG	Complete Games
+206	PitchingPost	SHO	Shutouts
+207	PitchingPost	SV	Saves
+208	PitchingPost	IPOuts	Outs Pitched (innings pitched x 3)
+209	PitchingPost	H	Hits
+210	PitchingPost	ER	Earned Runs
+211	PitchingPost	HR	Homeruns
+212	PitchingPost	BB	Walks
+213	PitchingPost	SO	Strikeouts
+214	PitchingPost	BAOpp	Opponents batting average"
+"215","PitchingPost","ERA","Earned Run Average"
+"216","PitchingPost","IBB","Intentional Walks"
+"217","PitchingPost","WP","Wild Pitches"
+"218","PitchingPost","HBP","Batters Hit By Pitch"
+"219","PitchingPost","BK","Balks"
+"220","PitchingPost","BFP","Batters faced by Pitcher"
+"221","PitchingPost","GF","Games Finished"
+"222","PitchingPost","R","Runs Allowed"
+"223","PitchingPost","SH","Sacrifice Hits allowed"
+"224","PitchingPost","SF","Sacrifice Flies allowed"
+"225","PitchingPost","GIDP","Grounded into Double Plays"
+"226","TeamsFranchises","franchID","Franchise ID"
+"227","TeamsFranchises","franchName","Franchise name"
+"228","TeamsFranchises","active","Whetehr team is currently active (Y or N)"
+"229","TeamsFranchises","NAassoc","ID of National Association team franchise played as"
+"230","FieldingOF","playerID","Player ID code"
+"231","FieldingOF","yearID","Year"
+"232","FieldingOF","stint","players stint (order of appearances within a season)
+233	FieldingOF	Glf	Games played in left field
+234	FieldingOF	Gcf	Games played in center field
+235	FieldingOF	Grf	Games played in right field
+236	ManagersHalf	playerID	Manager ID code
+237	ManagersHalf	yearID	Year
+238	ManagersHalf	teamID	Team
+239	ManagersHalf	lgID	League
+240	ManagersHalf	inseason	Managerial order. One if the individual managed the team
+241	ManagersHalf	the	entire year.
+242	ManagersHalf	in	the managerial
+243	ManagersHalf	half	First or second half of season
+244	ManagersHalf	G	Games managed
+245	ManagersHalf	W	Wins
+246	ManagersHalf	L	Losses
+247	ManagersHalf	rank	Teams position in standings for the half"
+"248","TeamsHalf","yearID","Year"
+"249","TeamsHalf","lgID","League"
+"250","TeamsHalf","teamID","Team"
+"251","TeamsHalf","half","First or second half of season"
+"252","TeamsHalf","divID","Division"
+"253","TeamsHalf","DivWin","Won Division (Y or N)"
+"254","TeamsHalf","rank","Teams position in standings for the half
+255	TeamsHalf	G	Games played
+256	TeamsHalf	W	Wins
+257	TeamsHalf	L	Losses
+258	Salaries	yearID	Year
+259	Salaries	teamID	Team
+260	Salaries	lgID	League
+261	Salaries	playerID	Player ID code
+262	Salaries	salary	Salary
+263	SeriesPost	yearID	Year
+264	SeriesPost	round	Level of playoffs
+265	SeriesPost	teamIDwinner	Team ID of the team that won the series
+266	SeriesPost	lgIDwinner	League ID of the team that won the series
+267	SeriesPost	teamIDloser	Team ID of the team that lost the series
+268	SeriesPost	lgIDloser	League ID of the team that lost the series
+269	SeriesPost	wins	Wins by team that won the series
+270	SeriesPost	losses	Losses by team that won the series
+271	SeriesPost	ties	Tie games
+272	AwardsManagers	playerID	Manager ID code
+273	AwardsManagers	awardID	Name of award won
+274	AwardsManagers	yearID	Year
+275	AwardsManagers	lgID	League
+276	AwardsManagers	tie	Award was a tie (Y or N)
+277	AwardsManagers	notes	Notes about the award
+278	AwardsPlayers	playerID	Player ID code
+279	AwardsPlayers	awardID	Name of award won
+280	AwardsPlayers	yearID	Year
+281	AwardsPlayers	lgID	League
+282	AwardsPlayers	tie	Award was a tie (Y or N)
+283	AwardsPlayers	notes	Notes about the award
+284	AwardsShareManagers	awardID	name of award votes were received for
+285	AwardsShareManagers	yearID	Year
+286	AwardsShareManagers	lgID	League
+287	AwardsShareManagers	playerID	Manager ID code
+288	AwardsShareManagers	pointsWon	Number of points received
+289	AwardsShareManagers	pointsMax	Maximum numner of points possible
+290	AwardsShareManagers	votesFirst	Number of first place votes
+291	AwardsSharePlayers	awardID	name of award votes were received for
+292	AwardsSharePlayers	yearID	Year
+293	AwardsSharePlayers	lgID	League
+294	AwardsSharePlayers	playerID	Player ID code
+295	AwardsSharePlayers	pointsWon	Number of points received
+296	AwardsSharePlayers	pointsMax	Maximum numner of points possible
+297	AwardsSharePlayers	votesFirst	Number of first place votes
+298	FieldingPost	playerID	Player ID code
+299	FieldingPost	yearID	Year
+300	FieldingPost	teamID	Team
+301	FieldingPost	lgID	League
+302	FieldingPost	round	Level of playoffs
+303	FieldingPost	Pos	Position
+304	FieldingPost	G	Games
+305	FieldingPost	GS	Games Started
+306	FieldingPost	InnOuts	Time played in the field expressed as outs
+307	FieldingPost	PO	Putouts
+308	FieldingPost	A	Assists
+309	FieldingPost	E	Errors
+310	FieldingPost	DP	Double Plays
+311	FieldingPost	TP	Triple Plays
+312	FieldingPost	PB	Passed Balls
+313	FieldingPost	SB	Stolen Bases allowed (by catcher)
+314	FieldingPost	CS	Caught Stealing (by catcher)
+315	Appearances	yearID	Year
+316	Appearances	teamID	Team
+317	Appearances	lgID	League
+318	Appearances	playerID	Player ID code
+319	Appearances	G_all	Total games played
+320	Appearances	GS	Games started
+321	Appearances	G_batting	Games in which player batted
+322	Appearances	G_defense	Games in which player appeared on defense
+323	Appearances	G_p	Games as pitcher
+324	Appearances	G_c	Games as catcher
+325	Appearances	G_1b	Games as firstbaseman
+326	Appearances	G_2b	Games as secondbaseman
+327	Appearances	G_3b	Games as thirdbaseman
+328	Appearances	G_ss	Games as shortstop
+329	Appearances	G_lf	Games as leftfielder
+330	Appearances	G_cf	Games as centerfielder
+331	Appearances	G_rf	Games as right fielder
+332	Appearances	G_of	Games as outfielder
+333	Appearances	G_dh	Games as designated hitter
+334	Appearances	G_ph	Games as pinch hitter
+335	Appearances	G_pr	Games as pinch runner
+336	Schools	schoolID	school ID code
+337	Schools	schoolName	school name
+338	Schools	schoolCity	city where school is located
+339	Schools	schoolState	state where schools city is located"
+"340","Schools","schoolNick","nickname for schools baseball team
+341	CollegePlaying	playerid	Player ID code
+342	CollegePlaying	schoolID	school ID code
+343	CollegePlaying	year	year
+344	FieldingOFsplit	playerID	Player ID code
+345	FieldingOFsplit	yearID	Year
+346	FieldingOFsplit	stint	players stint (order of appearances within a season)"
+"347","FieldingOFsplit","teamID","Team"
+"348","FieldingOFsplit","lgID","League"
+"349","FieldingOFsplit","Pos","Position"
+"350","FieldingOFsplit","G","Games"
+"351","FieldingOFsplit","GS","Games Started"
+"352","FieldingOFsplit","InnOuts","Time played in the field expressed as outs"
+"353","FieldingOFsplit","PO","Putouts"
+"354","FieldingOFsplit","A","Assists"
+"355","FieldingOFsplit","E","Errors"
+"356","FieldingOFsplit","DP","Double Plays"
+"357","Parks","park.key","ballpark ID code"
+"358","Parks","park.name","name of ballpark"
+"359","Parks","park.alias","alternate names of ballpark"
+"360","Parks","city","city"
+"361","Parks","state","state"
+"362","Parks","country","country"
+"363","HomeGames","year.key","year"
+"364","HomeGames","league.key","league"
+"365","HomeGames","team.key","team ID"
+"366","HomeGames","park.key","ballpark ID"
+"367","HomeGames","span.first","date of first game played"
+"368","HomeGames","span.last","date of last game played"
+"369","HomeGames","games","total number of games"
+"370","HomeGames","openings","total number of dates played"
+"371","HomeGames","attendance","total attendaance"

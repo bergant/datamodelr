@@ -1,0 +1,238 @@
+---
+title: "Lahman Database Model"
+author: "Darko Bergant"
+date: "2017-10-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## About
+
+This tutorial shows how to use
+[datamodelr](https://github.com/bergant/datamodelr) to supplement R package
+documentation with relational diagrams.
+
+Examples are using data frames from
+[Lahman](https://cran.r-project.org/package=Lahman) package.
+
+
+## Extract meta data 
+
+There are > 20 data frames in the package. We can put them in a list
+`dataframes`:
+
+```{r}
+lahman <- new.env()
+table_names <- data(package="Lahman")$results[,"Item"]
+data(list = table_names, package = "Lahman", envir = lahman)
+dataframes <- as.list(lahman)
+str(dataframes, max.level = 1)
+```
+
+**datamodelr** can create data model object from a data frame with columns:
+`table`, `column`, `key`, `ref` and `ref_col` ("meta data" structure). See
+`?as.data_model` for more info.
+
+We can create meta data directly from the Lahman data frames:
+
+```{r metadata, message=FALSE}
+library(dplyr)
+library(purrr)
+
+meta_data <- 
+  dataframes %>% 
+  map(~data_frame(
+    column = names(.),
+    type = map_chr(., ~paste(class(.), collapse = ",") ),
+    key = NA,
+    ref = NA,
+    ref_col = NA
+  )) %>% 
+  bind_rows(.id = "table") 
+
+glimpse(meta_data)
+
+```
+
+## Column descriptions
+
+It is nice to have column descriptions in data model. Source: http://seanlahman.com/files/database/readme2016.txt, section 2.0
+
+
+```{r}
+column_descriptions <-
+  read.table("data/column_descriptions.csv", 
+             header = TRUE, stringsAsFactors = FALSE, sep = ",")
+
+meta_data <-
+  meta_data %>% 
+  left_join(column_descriptions, by = c("table", "column")) %>% 
+  mutate(description = substring(description, 1, 30))
+
+```
+
+
+Use `as.data_model` to convert meta data to data model object:
+
+```{r}
+library(datamodelr)
+dm <- as.data_model(meta_data)
+dm
+```
+
+Create diagram for selected tables:
+ 
+```{r simple_graph, fig.height=9}
+selected_tables = c("Master", "Batting", "Pitching", "Fielding", "Teams")
+g <- dm_create_graph(dm, focus = list(tables = selected_tables), 
+                     col_attr = c("column", "type"))
+dm_render_graph(g)
+```
+
+
+
+## Add keys 
+
+We could use `dm_set_key` and `dm_add_references` to add keys and references
+directly to a data model object. But, it looks verbose when managing large number
+of tables and references. Sometimes it is easier to manipulate the meta data
+before coercing it to the data model object.
+
+
+```{r add_keys}
+
+# simple key rules structure;
+
+key_rules = list(
+  list(
+    table = "Master",
+    column = "playerID"
+  ),
+  list(
+    table = c("Batting", "Fielding", "Pitching"),
+    column = c("playerID", "yearID", "teamID", "lgID")
+  ) , 
+  list(
+    table = "Teams",
+    column = c("yearID", "teamID", "lgID")
+  )  
+)
+
+# use dplyr::mutate to update the key column
+for(key_rule in key_rules) {
+  meta_data <- 
+    mutate(meta_data, 
+      key = ifelse(table %in% key_rule$table & 
+        column %in% key_rule$column, TRUE, key))
+}
+
+dm <- as.data_model(meta_data)
+```
+
+Use "keys_only" view type to render diagram with only key columns:
+```{r diagram_keys, fig.height=2}
+g <- dm_create_graph(dm, focus = list(tables = selected_tables),
+                     view_type = "keys_only", col_attr = c("column", "type"))
+
+dm_render_graph(g)
+```
+
+# Add references
+
+Mark relations with column `ref` (related table) and `ref_cols` referenced columns
+if related table has multiple columns in a key.
+
+In this example the relations to "Master" and "Teams" are created from
+"Batting", "Fielding" and "Pitching":
+
+```{r add_references}
+
+ref_rules <- list(
+  list(
+    table = c("Batting", "Fielding", "Pitching"),
+    column = "playerID",
+    ref = "Master"
+  ),
+  list(
+    table = c("Batting", "Fielding", "Pitching"),
+    column = c("yearID", "teamID", "lgID"),
+    ref = "Teams"
+  )
+)
+
+
+# update meta data
+for(ref_rule in ref_rules) {
+  meta_data <- mutate( 
+    meta_data, 
+    ref = ifelse(table %in% ref_rule$table & column %in% ref_rule$column, 
+                 ref_rule$ref, ref),
+    ref_col = ref # same column names in referenced table
+  )  
+}
+
+dm <- as.data_model(meta_data)
+dm
+
+
+```
+
+
+```{r diagram_refs, fig.height=2}
+g <- dm_create_graph(
+  dm,
+  focus = list(tables = selected_tables),
+  view_type = "keys_only",
+  col_attr = c("column", "type")
+)
+
+dm_render_graph(g)
+
+
+
+```
+
+With all columns selected, the diagram would be like:
+
+ 
+```{r fig.height=10} 
+g <- dm_create_graph(
+  dm,
+  focus = list(tables = selected_tables),
+  view_type = "all",
+  col_attr = c("column", "type", "description")
+)
+
+dm_render_graph(g)
+
+
+```
+
+
+# Table overview
+
+
+
+**Batting** table:
+
+```{r}
+DT::datatable(
+  dm$columns %>% 
+    filter(table == "Batting") %>% 
+    mutate(
+      column = ifelse(key, sprintf("<strong>%s</strong>", column), column)
+    ) %>% 
+    select(column, description, type, ref), 
+  filter = "none",
+  escape = -1,
+  rownames = FALSE,
+  options = list(
+    pageLength = 100,
+    dom = 't'
+  )
+)
+```
+

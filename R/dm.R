@@ -90,11 +90,22 @@ as.data_model.data.frame <- function(x) {
     stop("Data frame must have elements named 'table' and 'column'.")
   }
 
+  # set key to 0 if NA or add key if NULL:
   if(!is.null(x[["key"]])) {
-    x[is.na(x[,"key"]), "key"] <- 0
+    x[is.na(x[,"key"]), "key"] <- FALSE
   } else {
-    x[,"key"] <- 0
+    x[,"key"] <- FALSE
   }
+
+  # convert logical key markers to numeric (column order in a key)
+  # x$table <- factor(x$table, ordered = TRUE)
+  # if(max(x$key, na.rm = TRUE) <= 1) {
+  #   keys <-
+  #     lapply(split(x, x$table), function(t) {
+  #       cumsum(t$key) * t$key
+  #     })
+  #   x$key <- unlist(keys)
+  # }
 
   if(is.null(x[["ref"]])) x[["ref"]] <- NA
 
@@ -609,7 +620,7 @@ print.data_model <- function(x, ...) {
   }
   cat(" ", nrow(x$tables), "tables: ", tables,"\n")
   cat(" ", nrow(x$columns), "columns\n")
-  cat(" ", ifelse(is.null(x$references), "no", nrow(x$references)),
+  cat(" ", ifelse(is.null(x$references), "no", length(unique(x$references))),
       "references\n")
 }
 
