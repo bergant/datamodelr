@@ -1,8 +1,8 @@
 Package: datamodelr
 Type: Package
 Title: Define and Plot Data Model Diagrams
-Version: 0.2.2.9001
-Date: 2017-09-15
+Version: 0.2.2.9002
+Date: 2017-12-17
 Author: Darko Bergant
 Maintainer: Darko Bergant <darko.bergant@gmail.com>
 URL: https://github.com/bergant/datamodelr

@@ -77,10 +77,12 @@ to_html_table <- function (x,
 #' @param palette_id Which color palette should be used (default)
 #' @param col_attr Column atributes to display.
 #'   Only column name (\code{column}) is included by default.
+#' @param columnArrows Arrows between columns instead of tables (default: FALSE)
 #' @keywords internal
 #' @references See \url{http://www.graphviz.org/content/node-shapes}
 #' @export
-dot_html_label <- function(x, title, palette_id = "default", col_attr = c("column") ) {
+dot_html_label <- function(x, title, palette_id = "default", col_attr = c("column"),
+                           columnArrows = FALSE ) {
   cols <- c("ref", col_attr)
   if(is.null(palette_id)) {
     palette_id <- "default"
@@ -95,24 +97,38 @@ dot_html_label <- function(x, title, palette_id = "default", col_attr = c("colum
     attr_table[["COLOR"]] <- dm_color(palette_id, "line_color")
   }
   attr_header <- list(
-    COLSPAN=length(cols), BGCOLOR=dm_color(palette_id, "header_bgcolor"), BORDER=0
+    COLSPAN=length(cols) - columnArrows, BGCOLOR=dm_color(palette_id, "header_bgcolor"), BORDER=0
   )
   attr_font <- list()
   attr_font <- list(COLOR = dm_color(palette_id, "header_font"))
 
   attr_td <- function(col_name, row_values, value) {
-    list(ALIGN="LEFT", BGCOLOR = dm_color(palette_id, "bgcolor"))
+    ret <- list(ALIGN="LEFT", BGCOLOR = dm_color(palette_id, "bgcolor"))
+    if(col_name == "column" && columnArrows) {
+      key <- row_values[["key"]];
+      reference <- row_values[["ref"]];
+      if(!is.na(reference) || key) {
+        ret$PORT = row_values[["column"]];
+      }
+    }
+    ret;
   }
 
   # value presentation transformation
   trans <- function(col_name, row_values, value) {
     if(col_name == "ref") {
       value <- ifelse(is.na(value), "", "~")
+      if(columnArrows) {
+        value <- NULL;
+      }
     }
     if(col_name == "column" && row_values[["key"]]) {
       value <- sprintf("<U>%s</U>", value)
     }
-    ifelse(is.na(value), "", value)
+    if(!is.null(value) && is.na(value)) {
+      value = "";
+    }
+    return(value);
   }
 
   ret <- to_html_table(x, title = title,
@@ -129,7 +145,8 @@ dot_html_label <- function(x, title, palette_id = "default", col_attr = c("colum
 
 
 dm_create_graph_list <- function(dm, view_type = "all",
-                                 focus = NULL, col_attr = "column") {
+                                 focus = NULL, col_attr = "column",
+                                 columnArrows = FALSE) {
 
   if(!is.data_model(dm)) stop("Input must be a data model object.")
 
@@ -185,7 +202,8 @@ dm_create_graph_list <- function(dm, view_type = "all",
         tables[[x]],
         title = x,
         palette_id = dm$tables[dm$tables$table == x, "display"],
-        col_attr = col_attr)
+        col_attr = col_attr,
+        columnArrows = columnArrows)
     })
 
   nodes <-
@@ -203,7 +221,12 @@ dm_create_graph_list <- function(dm, view_type = "all",
   if(!is.null(dm$references)) {
     edges <-
       with(dm$references[dm$references$ref_col_num == 1,],
-           data.frame(from = table, to = ref, stringsAsFactors = FALSE))
+           data.frame(
+             from = table,
+             to = ref,
+             fromCol = column,
+             toCol = ref_col,
+             stringsAsFactors = FALSE))
   } else {
     edges <- NULL
   }
@@ -228,13 +251,15 @@ dm_create_graph_list <- function(dm, view_type = "all",
 #' @param focus A list of parameters for rendering (table filter)
 #' @param col_attr Column atributes to display.
 #'   Only column name (\code{column}) is included by default.
+#' @param columnArrows Edges from column to column (default: FALSE)
 #' @export
 dm_create_graph <- function(dm, rankdir = "BT", graph_name = "Data Model",
                      graph_attrs = "",
                      node_attrs = "",
                      edge_attrs = "",
                      view_type = "all", focus = NULL,
-                     col_attr = "column") {
+                     col_attr = "column",
+                     columnArrows = FALSE) {
 
   if(!is.data_model(dm)) stop("Input must be a data model object.")
 
@@ -244,7 +269,8 @@ dm_create_graph <- function(dm, rankdir = "BT", graph_name = "Data Model",
   }
   g_list <-
     dm_create_graph_list(dm = dm, view_type = view_type,
-                         focus = focus, col_attr = col_attr)
+                         focus = focus, col_attr = col_attr,
+                         columnArrows = columnArrows)
   if(length(g_list$nodes$nodes) == 0) {
     warning("The number of tables to render is 0.")
   }
@@ -260,7 +286,7 @@ dm_create_graph <- function(dm, rankdir = "BT", graph_name = "Data Model",
 
   # re-create dot code for data model
   # (DiagrammeR does not support yet the HTML labels and clusters (v.0.8))
-  graph$dot_code <- dot_graph(graph)
+  graph$dot_code <- dot_graph(graph, columnArrows)
 
   graph
 
@@ -292,7 +318,7 @@ dm_render_graph <- function (graph, width = NULL, height = NULL) {
 }
 
 
-dot_graph <- function(graph) {
+dot_graph <- function(graph, columnArrows = FALSE) {
 
   graph_type <- "digraph"
 
@@ -320,11 +346,23 @@ dot_graph <- function(graph) {
   })
 
   dot_seg_nodes <- paste(dot_nodes, collapse = "\n")
-  dot_edges <-
-    paste(
+  dot_edges <- "";
+  if(columnArrows) {
+    dot_edges <- paste(
+      sprintf("'%s':'%s'->'%s':'%s'",
+              graph$edges_df$from,
+              graph$edges_df$fromCol,
+              graph$edges_df$to,
+              graph$edges_df$toCol
+      ),
+      collapse = "\n"
+    )
+  } else {
+    dot_edges <- paste(
       sprintf("'%s'->'%s'", graph$edges_df$from, graph$edges_df$to),
       collapse = "\n"
     )
+  }
   ret <- sprintf("#data_model\n%s {\n%s\n%s\n%s\n}",
                  graph_type,
                  dot_attr,

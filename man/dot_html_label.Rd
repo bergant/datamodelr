@@ -4,7 +4,8 @@
 \alias{dot_html_label}
 \title{Create a label}
 \usage{
-dot_html_label(x, title, palette_id = "default", col_attr = c("column"))
+dot_html_label(x, title, palette_id = "default", col_attr = c("column"),
+  columnArrows = FALSE)
 }
 \arguments{
 \item{x}{A data frame with column info}
@@ -15,6 +16,8 @@ dot_html_label(x, title, palette_id = "default", col_attr = c("column"))
 
 \item{col_attr}{Column atributes to display.
 Only column name (\code{column}) is included by default.}
+
+\item{columnArrows}{Arrows between columns instead of tables (default: FALSE)}
 }
 \description{
 Create a label for dot HTML shape

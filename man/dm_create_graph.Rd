@@ -6,7 +6,7 @@
 \usage{
 dm_create_graph(dm, rankdir = "BT", graph_name = "Data Model",
   graph_attrs = "", node_attrs = "", edge_attrs = "", view_type = "all",
-  focus = NULL, col_attr = "column")
+  focus = NULL, col_attr = "column", columnArrows = FALSE)
 }
 \arguments{
 \item{dm}{A data model object}
@@ -29,6 +29,8 @@ It defines the level of details for the table rendering
 
 \item{col_attr}{Column atributes to display.
 Only column name (\code{column}) is included by default.}
+
+\item{columnArrows}{Edges from column to column (default: FALSE)}
 }
 \description{
 Create a graph object from data model object
