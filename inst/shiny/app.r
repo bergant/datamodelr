@@ -42,7 +42,8 @@ ui = shinyUI(fluidPage(
              "Left-right" = "LR",
              "Top-bottom" = "TB"), selected = "RL"),
            hr(),
-           downloadButton(outputId = 'downloadData', label = 'Download SVG')
+           downloadButton(outputId = 'downloadData', label = 'Download SVG'),
+           downloadButton(outputId = 'downloadDataPng', label = 'Download PNG')
     )
   ),
   HTML('<footer>
@@ -68,10 +69,18 @@ server = function(input, output, session){
     content = function(file) {
       dm <- dm_read_yaml(text = input$ace)
       graph <- dm_create_graph(dm, rankdir = input$rankdir, view_type = input$view_type)
-      svg <- DiagrammeR::exportSVG(DiagrammeR::grViz(graph$dot_code) )
-      writeChar(object = svg, file, eos = NULL)
+      dm_export_graph(graph, file, file_type = "svg");
     },
     contentType = "image/svg+xml"
+  )
+  output$downloadDataPng <- downloadHandler(
+    filename = "export.png",
+    content = function(file) {
+      dm <- dm_read_yaml(text = input$ace)
+      graph <- dm_create_graph(dm, rankdir = input$rankdir, view_type = input$view_type)
+      dm_export_graph(graph, file, file_type = "png");
+    },
+    contentType = "image/png"
   )
 }
 
