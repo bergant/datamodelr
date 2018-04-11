@@ -420,7 +420,7 @@ dm_from_data_frames <- function(...) {
               t1 <- tables[[table_name]]
               columns <- data.frame(
                 column = names(t1),
-                type = sapply(t1[0,], function(x) paste(class(x), collapse = ", ")),
+                type = sapply(t1[0, , drop = FALSE], function(x) paste(class(x), collapse = ", ")),
                 stringsAsFactors = FALSE)
               columns$table <- table_name
               columns
