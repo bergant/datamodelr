@@ -1,0 +1,5 @@
+Data model object:
+  4 tables:  Person, Order, Order Line, Item 
+  24 columns
+  5 primary keys
+  4 references

@@ -16,7 +16,7 @@ License: MIT + file LICENSE
 Suggests:
     yaml,
     DiagrammeR,
-    testthat,
+    testthat (>= 2.1.0),
     V8,
     rsvg
 LazyData: TRUE
