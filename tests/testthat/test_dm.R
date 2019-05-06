@@ -69,6 +69,8 @@ test_that("Example yaml", {
   expect_is(dm, "data_model")
   expect_gt(nrow(dm$columns), 5)
   expect_gt(nrow(dm$references), 1)
+
+  expect_known_output(print(dm), "out/example.txt")
 })
 
 
