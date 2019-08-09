@@ -618,9 +618,10 @@ print.data_model <- function(x, ...) {
   if(length(x$tables$table) > 4) {
     tables <- paste(tables, "...")
   }
-  cat(" ", nrow(x$tables), "tables: ", tables,"\n")
-  cat(" ", nrow(x$columns), "columns\n")
-  cat(" ", ifelse(is.null(x$references), "no", length(unique(x$references))),
+  cat(" ", NROW(x$tables), "tables: ", tables,"\n")
+  cat(" ", NROW(x$columns), "columns\n")
+  cat(" ", sum(x$columns[["key"]] != 0), "primary keys\n")
+  cat(" ", ifelse(is.null(x$references), "no", NROW(unique(x$references))),
       "references\n")
 }
 
