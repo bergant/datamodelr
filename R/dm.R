@@ -620,7 +620,7 @@ print.data_model <- function(x, ...) {
   }
   cat(" ", NROW(x$tables), "tables: ", tables,"\n")
   cat(" ", NROW(x$columns), "columns\n")
-  cat(" ", length(unique(x$columns[x$columns[["key"]] != 0,"table"])), "primary keys\n")
+  cat(" ", sum(x$columns[["key"]] != 0), "primary keys\n")
   cat(" ", ifelse(is.null(x$references), "no", NROW(unique(x$references))),
       "references\n")
 }
