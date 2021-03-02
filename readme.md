@@ -1,5 +1,5 @@
 
-
+**This project is no longer actively maintained. Please take a look at [dm](https://krlmlr.github.io/dm/) package.**
 
 # datamodelr
 
