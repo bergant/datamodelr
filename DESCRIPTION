@@ -16,8 +16,9 @@ License: MIT + file LICENSE
 Suggests:
     yaml,
     DiagrammeR,
+    DiagrammeRsvg,
     testthat (>= 2.1.0),
     V8,
     rsvg
 LazyData: TRUE
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
